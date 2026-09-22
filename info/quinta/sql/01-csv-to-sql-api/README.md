@@ -137,21 +137,52 @@ INSERT INTO `database`.`table` (`column1`, `column2`) VALUES
 ('another value', NULL);
 ```
 
+## Che cos'è un'API
+
+Un'API (Application Programming Interface) permette a due programmi di comunicare seguendo regole definite. In questo esercizio un client invia un file CSV al server tramite HTTP; il server elabora i dati e restituisce la query SQL generata.
+
+L'API mette a disposizione due indirizzi, chiamati **endpoint**:
+
+- `GET /health.php` controlla che il server sia attivo;
+- `POST /api/generate-insert.php` riceve il CSV e restituisce la query `INSERT`.
+
+L'endpoint principale accetta soltanto richieste `POST`. Aprirlo direttamente dalla barra degli indirizzi del browser non è sufficiente, perché il browser invierebbe una richiesta `GET` senza il file CSV.
+
 ## Provare l'API
 
-Avviare il server integrato di PHP dalla cartella dell'esercizio:
+I comandi seguenti devono essere eseguiti dalla cartella dell'esercizio `01-csv-to-sql-api`.
+
+### 1. Avviare il server
+
+Aprire un primo terminale e avviare il server integrato di PHP:
 
 ```bash
 php -S localhost:8000 -t public
 ```
 
-Controllare che sia attivo:
+Su Windows, se PHP è installato tramite XAMPP, usare:
+
+```powershell
+C:\xampp\php\php.exe -S localhost:8000 -t public
+```
+
+Lasciare aperto questo terminale mentre si prova l'API. Il server è raggiungibile all'indirizzo `http://localhost:8000`.
+
+Per controllare che sia attivo, aprire nel browser <http://localhost:8000/health.php> oppure eseguire:
 
 ```bash
 curl http://localhost:8000/health.php
 ```
 
-Inviare il CSV di esempio nel corpo di una richiesta `POST`:
+La risposta attesa è:
+
+```json
+{"status":"ok"}
+```
+
+### 2. Inviare il file CSV
+
+Aprire un secondo terminale, sempre nella cartella dell'esercizio, e inviare il file di esempio:
 
 ```bash
 curl -i \
@@ -161,9 +192,40 @@ curl -i \
   "http://localhost:8000/api/generate-insert.php?database=school&table=students"
 ```
 
-Prima di completare il convertitore l'endpoint risponde con lo stato `501 Not Implemented`. Dopo aver fatto passare i test restituisce la query SQL con stato `200 OK`.
+In PowerShell usare `curl.exe` per evitare che `curl` venga interpretato come un altro comando:
 
-Con XAMPP è possibile esporre la cartella `public` tramite Apache e usare gli stessi file `health.php` e `api/generate-insert.php`.
+```powershell
+curl.exe -i -X POST -H "Content-Type: text/csv" --data-binary "@examples/students.csv" "http://localhost:8000/api/generate-insert.php?database=school&table=students"
+```
+
+### Come leggere il comando `curl`
+
+`curl` è un programma da terminale che permette di inviare richieste HTTP. Le parti del comando hanno questo significato:
+
+- `-i` mostra anche lo stato e le intestazioni della risposta HTTP;
+- `-X POST` specifica che il metodo della richiesta è `POST`;
+- `-H "Content-Type: text/csv"` comunica al server che il contenuto inviato è in formato CSV;
+- `--data-binary @examples/students.csv` legge il file indicato dopo `@` e ne invia il contenuto nel corpo della richiesta;
+- `/api/generate-insert.php` è l'endpoint che elabora il CSV;
+- `database=school&table=students` sono i parametri che indicano il database e la tabella da usare nella query SQL.
+
+Il percorso completo dei dati è quindi:
+
+```text
+examples/students.csv
+        ↓
+curl legge e invia il file con una richiesta POST
+        ↓
+public/api/generate-insert.php riceve la richiesta
+        ↓
+CsvToSqlConverter converte i dati
+        ↓
+il server restituisce la query INSERT
+```
+
+Prima di completare il convertitore, l'endpoint risponde con lo stato `501 Not Implemented`. Dopo aver fatto passare i test, restituisce la query SQL con stato `200 OK`.
+
+Con XAMPP è anche possibile esporre la cartella `public` tramite Apache e usare gli stessi file `health.php` e `api/generate-insert.php`.
 
 ## Limiti intenzionali
 
