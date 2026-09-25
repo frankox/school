@@ -10,9 +10,6 @@ final class CsvToSqlConverter
 {
     public function convert(string $csv, string $database, string $table): string
     {
-        // TODO: implement the conversion described in the README
-        // and make every test in tests/run.php pass.
-
         $stream = fopen("php://temp", 'r+');
 
         if(!$stream) {
@@ -28,7 +25,7 @@ final class CsvToSqlConverter
 
         $columns = fgetcsv($stream, null, ',', '"', ''); 
 
-        
+
 
         throw new LogicException('Converter not implemented yet.');
     }
