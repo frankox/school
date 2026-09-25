@@ -21,12 +21,12 @@ final class CsvToSqlConverter
         rewind($stream);
 
         // TODO: implement the conversion described in the README
-        // and make every test in tests/run.php pass.
+        // and make every test in tests/run.php pass. 
 
         $columns = fgetcsv($stream, null, ',', '"', ''); 
 
-
-
+        $rows = [];
+    
         throw new LogicException('Converter not implemented yet.');
     }
 }
