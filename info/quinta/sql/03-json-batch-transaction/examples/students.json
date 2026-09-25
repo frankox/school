@@ -1,0 +1,14 @@
+[
+  {
+    "first_name": "Mario",
+    "last_name": "Rossi",
+    "age": 18,
+    "student_code": "00123"
+  },
+  {
+    "first_name": "Anna",
+    "last_name": "Verdi",
+    "age": 19,
+    "student_code": "00124"
+  }
+]

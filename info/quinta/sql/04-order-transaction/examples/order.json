@@ -1,0 +1,7 @@
+{
+  "customer_id": 7,
+  "items": [
+    {"product_id": 10, "quantity": 2},
+    {"product_id": 20, "quantity": 1}
+  ]
+}
