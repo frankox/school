@@ -75,7 +75,7 @@ All'inizio i test falliscono perché il convertitore non è ancora implementato.
 Il comportamento completo è descritto anche dai test già forniti.
 
 1. Il CSV usa la virgola come separatore e la prima riga contiene i nomi delle colonne.
-2. Database, tabella e colonne sono identificatori validi solo se rispettano la forma `[A-Za-z_][A-Za-z0-9_]*`.
+2. Database, tabella e colonne sono identificatori validi solo se rispettano la forma `[A-Za-z_][A-Za-z0-9_]*` (è una regex, se non sapete cos'è cercate in internet oppure chiedete. Per capire a cosa si riferisce potete usare regex101).
 3. Le colonne non possono essere vuote o duplicate.
 4. Ogni riga deve contenere esattamente un valore per ogni colonna.
 5. Le righe completamente vuote vengono ignorate.
