@@ -12,6 +12,24 @@ final class CsvToSqlConverter
     {
         // TODO: implement the conversion described in the README
         // and make every test in tests/run.php pass.
+
+        $stream = fopen("php://temp", 'r+');
+
+        if(!$stream) {
+            throw new LogicException('Could not open temporary stream.');
+        }
+
+
+        fwrite($stream, $csv);
+        rewind($stream);
+
+        // TODO: implement the conversion described in the README
+        // and make every test in tests/run.php pass.
+
+        $columns = fgetcsv($stream, null, ',', '"', ''); 
+
+        
+
         throw new LogicException('Converter not implemented yet.');
     }
 }
