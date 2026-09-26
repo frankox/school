@@ -8,7 +8,7 @@ L'API e i test sono già predisposti. Il lavoro va svolto esclusivamente nel met
 
 ## Installare e verificare PHP
 
-È necessario PHP 8.1 o successivo. Non servono Composer o librerie esterne.
+È necessario PHP 8.0 o successivo. Non servono Composer o librerie esterne.
 
 ### Windows con XAMPP
 
@@ -18,17 +18,27 @@ XAMPP include già PHP. Se XAMPP non è installato:
 2. eseguire l'installazione lasciando selezionati almeno Apache, MySQL e PHP;
 3. mantenere il percorso proposto `C:\xampp`, se non ci sono esigenze diverse.
 
-Aprire PowerShell nella cartella dell'esercizio e controllare la versione con:
+Aprire **PowerShell nella cartella principale dell'esercizio**, cioè quella che
+contiene le cartelle `src`, `tests` e `public`. Per controllare di essere nella
+cartella corretta:
 
 ```powershell
-C:\xampp\php\php.exe --version
+Test-Path .\tests\run.php
+```
+
+Il comando deve stampare `True`.
+
+Controllare quindi la versione di PHP inclusa in XAMPP:
+
+```powershell
+& "C:\xampp\php\php.exe" --version
 ```
 
 PHP può essere usato direttamente con il percorso completo, senza modificare Windows:
 
 ```powershell
-C:\xampp\php\php.exe tests\run.php
-C:\xampp\php\php.exe -S localhost:8000 -t public
+& "C:\xampp\php\php.exe" .\tests\run.php
+& "C:\xampp\php\php.exe" -S localhost:8000 -t .\public
 ```
 
 Per poter scrivere semplicemente `php`, aggiungere `C:\xampp\php` alla variabile di ambiente `Path`:
@@ -62,7 +72,40 @@ php --version
 
 ## Avvio rapido
 
-Eseguire i test dalla cartella dell'esercizio:
+Su Windows, il modo più semplice è eseguire il launcher dalla cartella
+principale dell'esercizio:
+
+```powershell
+.\run-tests.bat
+```
+
+Il launcher usa `php` dal `Path`, se disponibile, altrimenti cerca
+automaticamente `C:\xampp\php\php.exe`. Funziona anche se viene richiamato da
+un'altra cartella.
+
+In alternativa, eseguire direttamente PHP dalla cartella principale
+dell'esercizio:
+
+```powershell
+php .\tests\run.php
+```
+
+Se `php` non viene riconosciuto, su Windows usare il percorso completo:
+
+```powershell
+& "C:\xampp\php\php.exe" .\tests\run.php
+```
+
+Se compare `Could not open input file`, il problema non è PHP: PowerShell si
+trova nella cartella sbagliata. Tornare nella cartella che contiene `src`,
+`tests` e `public`, quindi rieseguire il comando. Se invece PowerShell è già
+dentro la cartella `tests`, il comando corretto è:
+
+```powershell
+& "C:\xampp\php\php.exe" .\run.php
+```
+
+Su Linux:
 
 ```bash
 php tests/run.php
