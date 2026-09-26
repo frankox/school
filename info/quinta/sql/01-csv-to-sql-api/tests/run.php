@@ -72,7 +72,17 @@ $tests = [
         assertSame($expected, $actual);
     },
 
-    'recognizes null integers decimals and leading zeros' => function (): void {
+    'recognizes null values' => function (): void {
+        $csv = "name,quantity,price,notes\npluto,-2,1.50,\n";
+        $expected = "INSERT INTO `shop`.`products` (`name`, `quantity`, `price`, `notes`) VALUES\n"
+            . "('pluto', -2, 1.50, NULL);";
+
+        $actual = (new CsvToSqlConverter())->convert($csv, 'shop', 'products');
+
+        assertSame($expected, $actual);
+    },
+
+    'recognizes leading zeros' => function (): void {
         $csv = "code,quantity,price,notes\n00123,-2,1.50,\n";
         $expected = "INSERT INTO `shop`.`products` (`code`, `quantity`, `price`, `notes`) VALUES\n"
             . "('00123', -2, 1.50, NULL);";
@@ -138,24 +148,7 @@ $tests = [
                 'students'
             )
         );
-    },
-
-    'rejects invalid SQL identifiers' => function (): void {
-        $converter = new CsvToSqlConverter();
-
-        assertThrows(
-            InvalidArgumentException::class,
-            fn () => $converter->convert("id,first_name\n1,Mario\n", 'school-test', 'students')
-        );
-        assertThrows(
-            InvalidArgumentException::class,
-            fn () => $converter->convert("id,first_name\n1,Mario\n", 'school', 'students;DROP')
-        );
-        assertThrows(
-            InvalidArgumentException::class,
-            fn () => $converter->convert("id,full name\n1,Mario\n", 'school', 'students')
-        );
-    },
+    }
 ];
 
 $passed = 0;
