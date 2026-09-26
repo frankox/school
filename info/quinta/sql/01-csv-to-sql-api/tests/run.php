@@ -41,6 +41,16 @@ function assertThrows(string $expectedClass, Closure $operation): void
 }
 
 $tests = [
+    'converts one row, just string values' => function (): void {
+        $csv = "first_name,last_name,nationality\nMario,Rossi,IT\n";
+        $expected = "INSERT INTO `school`.`students` (`first_name`, `last_name`, `nationality`) VALUES\n"
+            . "('Mario', 'Rossi', 'IT');";
+
+        $actual = (new CsvToSqlConverter())->convert($csv, 'school', 'students');
+
+        assertSame($expected, $actual);
+    },
+
     'converts one row' => function (): void {
         $csv = "first_name,last_name,age\nMario,Rossi,18\n";
         $expected = "INSERT INTO `school`.`students` (`first_name`, `last_name`, `age`) VALUES\n"
