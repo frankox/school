@@ -39,7 +39,7 @@ function assertThrows(string $expectedClass, Closure $operation): void
 
     throw new TestFailure("Expected exception {$expectedClass}, but none was thrown.");
 }
-
+    
 $tests = [
     'converts one row, just string values' => function (): void {
         $csv = "first_name,last_name,nationality\nMario,Rossi,IT\n";
@@ -51,7 +51,7 @@ $tests = [
         assertSame($expected, $actual);
     },
 
-    'converts one row' => function (): void {
+    'converts one row with num values' => function (): void {
         $csv = "first_name,last_name,age\nMario,Rossi,18\n";
         $expected = "INSERT INTO `school`.`students` (`first_name`, `last_name`, `age`) VALUES\n"
             . "('Mario', 'Rossi', 18);";
