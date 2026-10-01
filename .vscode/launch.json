@@ -1,0 +1,65 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Test API 01",
+      "type": "php",
+      "request": "launch",
+      "program": "${workspaceFolder}/info/API/01-csv-to-sql-api/tests/run.php",
+      "cwd": "${workspaceFolder}/info/API/01-csv-to-sql-api",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["${workspaceFolder}/scripts/php.mjs", "ide"],
+      "hostname": "127.0.0.1",
+      "port": 0,
+      "env": {
+        "XDEBUG_MODE": "debug",
+        "XDEBUG_CONFIG": "client_host=127.0.0.1 client_port=${port}"
+      }
+    },
+    {
+      "name": "Test API 02",
+      "type": "php",
+      "request": "launch",
+      "program": "${workspaceFolder}/info/API/02-json-student-api/tests/run.php",
+      "cwd": "${workspaceFolder}/info/API/02-json-student-api",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["${workspaceFolder}/scripts/php.mjs", "ide"],
+      "hostname": "127.0.0.1",
+      "port": 0,
+      "env": {
+        "XDEBUG_MODE": "debug",
+        "XDEBUG_CONFIG": "client_host=127.0.0.1 client_port=${port}"
+      }
+    },
+    {
+      "name": "Test API 03",
+      "type": "php",
+      "request": "launch",
+      "program": "${workspaceFolder}/info/API/03-json-batch-transaction/tests/run.php",
+      "cwd": "${workspaceFolder}/info/API/03-json-batch-transaction",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["${workspaceFolder}/scripts/php.mjs", "ide"],
+      "hostname": "127.0.0.1",
+      "port": 0,
+      "env": {
+        "XDEBUG_MODE": "debug",
+        "XDEBUG_CONFIG": "client_host=127.0.0.1 client_port=${port}"
+      }
+    },
+    {
+      "name": "Test API 04",
+      "type": "php",
+      "request": "launch",
+      "program": "${workspaceFolder}/info/API/04-order-transaction/tests/run.php",
+      "cwd": "${workspaceFolder}/info/API/04-order-transaction",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["${workspaceFolder}/scripts/php.mjs", "ide"],
+      "hostname": "127.0.0.1",
+      "port": 0,
+      "env": {
+        "XDEBUG_MODE": "debug",
+        "XDEBUG_CONFIG": "client_host=127.0.0.1 client_port=${port}"
+      }
+    }
+  ]
+}
