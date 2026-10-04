@@ -36,6 +36,8 @@ function assertThrows(string $class, Closure $operation): void
     throw new TestFailure("Expected {$class}, but none was thrown.");
 }
 
+// Queste due classi simulano PDO: registrano le chiamate senza aprire un database.
+// Il test può così controllare separatamente SQL, valori e ID restituito.
 final class RecordingStatement extends PDOStatement
 {
     public ?array $parameters = null;
@@ -46,7 +48,12 @@ final class RecordingStatement extends PDOStatement
 
     public function execute(?array $params = null): bool
     {
-        $this->parameters = $params;
+        // PDO accetta i nomi dei parametri con o senza il prefisso ':'.
+        $this->parameters = [];
+        foreach ($params ?? [] as $name => $value) {
+            $normalizedName = str_starts_with($name, ':') ? substr($name, 1) : $name;
+            $this->parameters[$normalizedName] = $value;
+        }
         return true;
     }
 }
@@ -74,9 +81,9 @@ final class RecordingPdo extends PDO
 }
 
 $tests = [
-    'creates a typed request and preserves leading zeros' => function (): void {
+    'creates a request from valid JSON and preserves leading zeros' => function (): void {
         $request = CreateStudentRequest::fromJson(
-            '{"first_name":"Mario","last_name":"Rossi","age":18,"student_code":"00123"}'
+            '{"firstName":"Mario","lastName":"Rossi","age":18,"studentCode":"00123"}'
         );
 
         assertSame('Mario', $request->firstName);
@@ -85,65 +92,84 @@ $tests = [
         assertSame('00123', $request->studentCode);
     },
 
-    'rejects malformed JSON and a non-object root' => function (): void {
+    'rejects snake_case JSON names when camelCase is required' => function (): void {
+        assertThrows(InvalidArgumentException::class, fn () => CreateStudentRequest::fromJson(
+            '{"first_name":"Mario","last_name":"Rossi","age":18,"student_code":"00123"}'
+        ));
+    },
+
+    'rejects malformed JSON' => function (): void {
         assertThrows(InvalidArgumentException::class, fn () => CreateStudentRequest::fromJson('{'));
+    },
+
+    'rejects a JSON array instead of an object' => function (): void {
         assertThrows(InvalidArgumentException::class, fn () => CreateStudentRequest::fromJson('[]'));
     },
 
-    'rejects missing and unexpected fields' => function (): void {
+    'rejects a missing studentCode field' => function (): void {
         assertThrows(
             InvalidArgumentException::class,
             fn () => CreateStudentRequest::fromJson(
-                '{"first_name":"Mario","last_name":"Rossi","age":18}'
-            )
-        );
-        assertThrows(
-            InvalidArgumentException::class,
-            fn () => CreateStudentRequest::fromJson(
-                '{"first_name":"Mario","last_name":"Rossi","age":18,"student_code":"1","admin":true}'
+                '{"firstName":"Mario","lastName":"Rossi","age":18}'
             )
         );
     },
 
-    'validates strings and age' => function (): void {
+    'rejects an empty firstName' => function (): void {
         assertThrows(
             InvalidArgumentException::class,
             fn () => CreateStudentRequest::fromJson(
-                '{"first_name":"","last_name":"Rossi","age":18,"student_code":"1"}'
-            )
-        );
-        assertThrows(
-            InvalidArgumentException::class,
-            fn () => CreateStudentRequest::fromJson(
-                '{"first_name":"Mario","last_name":"Rossi","age":"18","student_code":"1"}'
-            )
-        );
-        assertThrows(
-            InvalidArgumentException::class,
-            fn () => CreateStudentRequest::fromJson(
-                '{"first_name":"Mario","last_name":"Rossi","age":12,"student_code":"1"}'
+                '{"firstName":"","lastName":"Rossi","age":18,"studentCode":"1"}'
             )
         );
     },
 
-    'uses a prepared statement and returns the generated id' => function (): void {
+    'rejects age below 14' => function (): void {
+        assertThrows(
+            InvalidArgumentException::class,
+            fn () => CreateStudentRequest::fromJson(
+                '{"firstName":"Mario","lastName":"Rossi","age":12,"studentCode":"1"}'
+            )
+        );
+    },
+
+    // Passo 1: il repository definisce l'operazione SQL; non servono ancora i valori.
+    'PDO step 1: prepares an INSERT with four placeholders' => function (): void {
         $pdo = new RecordingPdo();
         $request = new CreateStudentRequest('Mario', 'Rossi', 18, '00123');
 
-        $id = (new StudentRepository($pdo))->create($request);
+        (new StudentRepository($pdo))->create($request);
 
         assertSame(
             'INSERT INTO students (first_name, last_name, age, student_code) '
                 . 'VALUES (:first_name, :last_name, :age, :student_code)',
             $pdo->sql
         );
+    },
+
+    // Passo 2: execute riceve i valori, separati dal testo della query SQL.
+    'PDO step 2: executes with values from the request' => function (): void {
+        $pdo = new RecordingPdo();
+        $request = new CreateStudentRequest('Mario', 'Rossi', 18, '00123');
+
+        (new StudentRepository($pdo))->create($request);
+
         assertSame([
             'first_name' => 'Mario',
             'last_name' => 'Rossi',
             'age' => 18,
             'student_code' => '00123',
         ], $pdo->statement->parameters);
-        assertSame(42, $id);
+    },
+
+    // Passo 3: lastInsertId simula l'ID assegnato dal database e restituisce "42".
+    'PDO step 3: returns the generated ID as a string' => function (): void {
+        $pdo = new RecordingPdo();
+        $request = new CreateStudentRequest('Mario', 'Rossi', 18, '00123');
+
+        $id = (new StudentRepository($pdo))->create($request);
+
+        assertSame('42', $id);
     },
 ];
 

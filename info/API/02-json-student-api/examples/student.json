@@ -1,6 +1,6 @@
 {
-  "first_name": "Mario",
-  "last_name": "Rossi",
+  "firstName": "Mario",
+  "lastName": "Rossi",
   "age": 18,
-  "student_code": "00123"
+  "studentCode": "00123"
 }

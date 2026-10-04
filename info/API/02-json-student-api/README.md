@@ -12,10 +12,10 @@ Realizzare `POST /api/students.php`. Il client invia questo JSON:
 
 ```json
 {
-  "first_name": "Mario",
-  "last_name": "Rossi",
+  "firstName": "Mario",
+  "lastName": "Rossi",
   "age": 18,
-  "student_code": "00123"
+  "studentCode": "00123"
 }
 ```
 
@@ -23,9 +23,9 @@ L'endpoint deve trasformare e controllare i dati in `CreateStudentRequest::fromJ
 
 Regole da rispettare:
 
-1. Il JSON deve contenere un **oggetto**, non un elenco o un valore singolo, con **esattamente** `first_name`, `last_name`, `age`, `student_code`.
+1. Il JSON deve contenere un **oggetto**, non un elenco o un valore singolo, con **esattamente** `firstName`, `lastName`, `age`, `studentCode`. Per questa API i nomi sono parte del contratto: `first_name` non equivale a `firstName`.
 2. Nomi e codice devono essere stringhe non vuote; `age` deve essere un intero tra 14 e 100.
-3. `student_code` resta una stringa: `"00123"` non deve diventare il numero `123`.
+3. `studentCode` resta una stringa: `"00123"` non deve diventare il numero `123`.
 4. I valori ricevuti devono essere passati a una **query preparata PDO**, usando parametri come `:first_name`; non vanno concatenati nel testo SQL.
 
 ## Il percorso dei dati, file per file
@@ -42,9 +42,9 @@ examples/student.json
 
 Un **client** è il programma che invia la richiesta (qui `curl`); il **server PHP** la riceve. `POST` è il metodo HTTP usato per creare una risorsa. Il **corpo** è il contenuto inviato con la richiesta; `Content-Type: application/json` ne dichiara il formato. La **risposta** contiene uno stato HTTP e un JSON. `201 Created` significa che il record è stato creato.
 
-Un **DTO** (`CreateStudentRequest`) è un oggetto PHP che raccoglie dati già interpretati e controllati. Nel JSON i nomi sono `first_name` e `student_code`; nelle proprietà PHP sono `firstName` e `studentCode`: serve una corrispondenza esplicita. `JsonToClassConverter` è un esperimento presente nella cartella `utils`; se lo usate, controllate con attenzione che sappia gestire questa differenza, i campi mancanti e i tipi. Una stampa con `echo` durante l'elaborazione romperebbe la risposta JSON dell'API.
+Un **DTO** (`CreateStudentRequest`) è un oggetto PHP che raccoglie i dati della richiesta. In questo esercizio i nomi del JSON corrispondono alle proprietà del DTO; i nomi delle colonne SQL sono invece `first_name`, `last_name` e `student_code`. `JsonToClassConverter` è un esperimento presente nella cartella `utils`: il suo comportamento iniziale non garantisce che tutti i campi siano presenti, che non ci siano campi in più o che i valori rispettino le regole. I test servono a scoprire e correggere questi casi. Una stampa con `echo` durante l'elaborazione romperebbe la risposta JSON dell'API.
 
-Il **repository** raccoglie il codice che accede al database. `PDO` è la libreria PHP usata per la connessione. `prepare()` prepara l'SQL con segnaposto; `execute()` associa i valori; `lastInsertId()` legge l'ID che MariaDB ha appena assegnato. Una query preparata non può usare un parametro al posto del nome di una tabella: qui il nome `students` è fisso nel codice.
+Il **repository** raccoglie il codice che accede al database. Prima di implementarlo, leggete la [guida a PDO e ai tre test progressivi](GUIDA-PDO.md): spiega che cosa rappresentano la connessione, la query preparata, i parametri e l'ID generato.
 
 ## Prima fase: test senza MariaDB
 
@@ -64,7 +64,7 @@ In PowerShell, `&` avvia il programma indicato tra virgolette; `.\` indica un pe
 
 Su Linux usare `php --version` e `php tests/run.php`.
 
-Per orientarsi nella repository: aprire `tests/run.php`, cercare un test alla volta, capire input e risultato atteso, poi intervenire nei metodi indicati. Ad esempio, controllare prima JSON valido e campi obbligatori, poi le eccezioni per input errati, infine la `INSERT`.
+Per orientarsi nella repository: aprire `tests/run.php` e leggere i nomi dei test nell'ordine. Ogni test di validazione contiene un solo difetto intenzionale. I tre test `PDO step 1`, `PDO step 2` e `PDO step 3` dividono l'ultimo lavoro in query, valori e ID. Durante l'esercizio è normale che alcuni test restino rossi: un test verde deve indicare che avete corretto proprio il caso descritto dal suo nome.
 
 ## Seconda fase: preparare XAMPP
 
@@ -106,7 +106,7 @@ curl.exe -i http://localhost:8000/health.php
 curl.exe -i -X POST -H "Content-Type: application/json" --data-binary "@examples/student.json" http://localhost:8000/api/students.php
 ```
 
-`curl.exe` invia richieste HTTP; `-i` mostra lo stato, `-X POST` sceglie il metodo, `-H` indica il formato, `--data-binary @examples/student.json` legge il file e lo invia nel corpo. `health.php` risponde `{"status":"ok"}` se il server PHP funziona, ma **non** controlla il database. Quando l'esercizio è completo, il `POST` risponde `201 Created` con un ID, per esempio `{"id":1}`. Ogni `POST` valido aggiunge davvero una riga.
+`curl.exe` invia richieste HTTP; `-i` mostra lo stato, `-X POST` sceglie il metodo, `-H` indica il formato, `--data-binary @examples/student.json` legge il file e lo invia nel corpo. `health.php` risponde `{"status":"ok"}` se il server PHP funziona, ma **non** controlla il database. Quando l'esercizio è completo, il `POST` risponde `201 Created` con un ID come stringa, per esempio `{"id":"1"}`. Ogni `POST` valido aggiunge davvero una riga.
 
 Per vedere il risultato, in phpMyAdmin aprire `school_ex02` → `students` → **Mostra**, oppure usare la scheda SQL:
 
@@ -116,7 +116,33 @@ FROM students
 ORDER BY id;
 ```
 
-Su Linux, dalla stessa cartella, si può importare con `mariadb -u root -p < schema.sql`, avviare con `php -S localhost:8000 -t public` e chiamare l'API con `curl` al posto di `curl.exe`.
+### Prova su Linux con XAMPP
+
+Anche su Linux si può usare XAMPP. Scaricare l'installer a 64 bit dal [sito ufficiale](https://www.apachefriends.org/download.html). Nel terminale, dalla cartella in cui si trova il file scaricato, seguire le [istruzioni ufficiali per Linux](https://www.apachefriends.org/faq_linux.html):
+
+```bash
+chmod 755 xampp-linux-*-installer.run
+sudo ./xampp-linux-*-installer.run
+sudo /opt/lampp/lampp start
+```
+
+L'installer colloca XAMPP in `/opt/lampp`; il comando `start` avvia Apache e MariaDB. Aprire <http://localhost/phpmyadmin/> e importare `schema.sql` come nella seconda fase. Poi, dalla cartella `02-json-student-api`, verificare il driver e avviare l'API con il PHP di XAMPP:
+
+```bash
+/opt/lampp/bin/php -m
+/opt/lampp/bin/php -S 127.0.0.1:8000 -t public
+```
+
+Nell'elenco dei moduli deve comparire `pdo_mysql`. Lasciare aperto il terminale del server PHP. In un secondo terminale, dalla stessa cartella dell'esercizio:
+
+```bash
+curl -i http://127.0.0.1:8000/health.php
+curl -i -X POST -H 'Content-Type: application/json' --data-binary @examples/student.json http://127.0.0.1:8000/api/students.php
+```
+
+Il primo comando verifica soltanto che PHP risponda. Il secondo deve rispondere `201 Created` con un ID come stringa e inserire una riga. Verificare l'inserimento in phpMyAdmin, nella tabella `school_ex02.students`, oppure con la `SELECT` riportata sopra. Se si ripete la richiesta con lo stesso `studentCode`, il vincolo `UNIQUE` impedisce un secondo inserimento: cambiare il codice nell'esempio per una nuova prova.
+
+Quando la prova è conclusa, `Ctrl+C` ferma il server PHP e `sudo /opt/lampp/lampp stop` ferma XAMPP. Il PHP installato nel sistema e quello in `/opt/lampp/bin/php` possono avere moduli diversi: per questa prova usare sempre il secondo.
 
 ## Errori frequenti
 
