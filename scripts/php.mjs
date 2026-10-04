@@ -90,9 +90,9 @@ async function xdebugOptions(php) {
   throw new Error('Xdebug non trovato per questo PHP. Installa la versione adatta o imposta XDEBUG_EXTENSION.');
 }
 
-function run(binary, args, cwd = root) {
+function run(binary, args, cwd = root, environment = {}) {
   const pathKey = Object.keys(process.env).find((key) => key.toLowerCase() === 'path') ?? 'PATH';
-  const env = { ...process.env, [pathKey]: `${dirname(binary)}${delimiter}${process.env[pathKey] ?? ''}` };
+  const env = { ...process.env, ...environment, [pathKey]: `${dirname(binary)}${delimiter}${process.env[pathKey] ?? ''}` };
   const child = spawn(binary, args, { cwd, env, stdio: 'inherit', windowsHide: true });
   child.on('error', (error) => {
     console.error(error.message);
@@ -101,6 +101,28 @@ function run(binary, args, cwd = root) {
   child.on('exit', (code, signal) => {
     process.exitCode = signal ? 1 : (code ?? 1);
   });
+}
+
+function startDockerDatabase(directory) {
+  const args = ['compose', 'up', '-d', '--wait', 'db'];
+  const first = spawnSync('docker', args, { cwd: directory, encoding: 'utf8', windowsHide: true });
+  if (first.status === 0) {
+    process.stdout.write(first.stdout);
+    process.stderr.write(first.stderr);
+    return;
+  }
+
+  const output = `${first.stdout ?? ''}${first.stderr ?? ''}`;
+  if (process.platform !== 'win32' && /permission denied.*docker API/i.test(output)) {
+    console.log('Docker richiede sudo su questo sistema. Avvio solo il database con privilegi amministrativi...');
+    const retry = spawnSync('sudo', ['docker', ...args], { cwd: directory, stdio: 'inherit' });
+    if (retry.status === 0) return;
+    throw new Error(`Impossibile avviare MariaDB con sudo. ${retry.error?.message ?? 'Controlla il messaggio di Docker qui sopra.'}`);
+  }
+
+  process.stdout.write(first.stdout ?? '');
+  process.stderr.write(first.stderr ?? '');
+  throw new Error(`Impossibile avviare MariaDB con Docker Compose. ${first.error?.message ?? 'Controlla Docker e il suo accesso al daemon.'}`);
 }
 
 try {
@@ -118,6 +140,24 @@ try {
       throw new Error(`Xdebug non si carica con questo PHP. ${check.stderr?.trim() ?? ''}`);
     }
     run(php, [...options, '-d', 'xdebug.mode=debug', '-d', 'xdebug.start_with_request=yes', exercise, ...extra], process.cwd());
+  } else if (mode === 'serve-docker') {
+    if (exercise !== '2' || extra.length) throw new Error('serve-docker è disponibile solo per l’esercizio 2.');
+    const directory = join(root, 'info', 'API', exercises[2]);
+    startDockerDatabase(directory);
+
+    const driverCheck = ['-r', 'echo extension_loaded("pdo_mysql") ? "yes" : "no";'];
+    const driverOptions = inspect(php, driverCheck).stdout?.trim() === 'yes' ? [] : ['-d', 'extension=pdo_mysql'];
+    if (inspect(php, [...driverOptions, ...driverCheck]).stdout?.trim() !== 'yes') {
+      throw new Error('Il PHP selezionato non riesce a caricare pdo_mysql. Controlla PHP_BIN o installa il modulo.');
+    }
+
+    const port = process.env.PORT || '8000';
+    if (!/^\d+$/.test(port)) throw new Error('PORT deve essere un numero.');
+    run(php, [...driverOptions, '-S', `127.0.0.1:${port}`, '-t', join(directory, 'public')], directory, {
+      DB_DSN: 'mysql:host=127.0.0.1;port=3307;dbname=school_ex02;charset=utf8mb4',
+      DB_USER: 'school_api',
+      DB_PASSWORD: 'school_dev',
+    });
   } else if (mode === 'test' || mode === 'serve') {
     if (extra.length || (exercise && exercise.startsWith('-'))) throw new Error('Questo comando non accetta opzioni di debug. Usa F5 in VS Code.');
     const folder = exercises[exercise];
@@ -133,7 +173,7 @@ try {
       run(php, ['-S', `localhost:${port}`, '-t', join(directory, 'public')], directory);
     }
   } else {
-    throw new Error('Usa npm run doctor, npm run test:2 o npm run serve:2. Per il debug dei test usa F5 in VS Code.');
+    throw new Error('Usa npm run doctor, npm run test:2, npm run serve:2 o npm run serve:2:docker. Per il debug dei test usa F5 in VS Code.');
   }
 } catch (error) {
   console.error(error.message);

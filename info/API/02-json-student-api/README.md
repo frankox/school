@@ -144,6 +144,38 @@ Il primo comando verifica soltanto che PHP risponda. Il secondo deve rispondere 
 
 Quando la prova è conclusa, `Ctrl+C` ferma il server PHP e `sudo /opt/lampp/lampp stop` ferma XAMPP. Il PHP installato nel sistema e quello in `/opt/lampp/bin/php` possono avere moduli diversi: per questa prova usare sempre il secondo.
 
+### Prova su Omarchy con Docker
+
+Se Docker è disponibile, [`compose.yaml`](compose.yaml) avvia MariaDB senza installare XAMPP. La prima volta carica automaticamente `schema.sql` e crea il database `school_ex02`. Il PHP dell'API gira sul computer, mentre il database gira nel contenitore. Dalla **radice del repository** basta avviare:
+
+```bash
+npm run serve:2:docker
+```
+
+Il launcher attende che MariaDB sia pronto, verifica `pdo_mysql`, imposta la connessione sulla porta `3307` e avvia l'API sulla porta `8000`. Su Omarchy Docker può richiedere `sudo`: il launcher chiede la password solo per Docker, mentre PHP gira con l'utente normale. Lasciare aperto il terminale. Da un secondo terminale, nella cartella `02-json-student-api`, usare i comandi `curl` e `sudo docker compose exec` riportati sotto.
+
+Per eseguire gli stessi passaggi manualmente, da questa cartella:
+
+```bash
+sudo docker compose up -d --wait db
+php -d extension=pdo_mysql -m
+```
+
+Il secondo comando deve mostrare `pdo_mysql`. Su questo PC il modulo esiste ma il PHP di sistema non lo carica per impostazione predefinita; l'opzione `-d` lo abilita per il singolo comando. Avviare quindi l'API nel primo terminale:
+
+```bash
+DB_DSN='mysql:host=127.0.0.1;port=3307;dbname=school_ex02;charset=utf8mb4' DB_USER=school_api DB_PASSWORD=school_dev php -d extension=pdo_mysql -S 127.0.0.1:8000 -t public
+```
+
+La porta `8000` serve la richiesta HTTP; Docker espone MariaDB solo sul computer locale alla porta `3307`. Nel secondo terminale, sempre da questa cartella:
+
+```bash
+curl -i -X POST -H 'Content-Type: application/json' --data-binary @examples/student.json http://127.0.0.1:8000/api/students.php
+sudo docker compose exec db mariadb -u school_api -pschool_dev school_ex02 -e 'SELECT id, first_name, last_name, age, student_code FROM students;'
+```
+
+La risposta `201 Created` indica che l'API ha completato la richiesta; la `SELECT` mostra la riga realmente salvata. Per una verifica visiva, avviare anche phpMyAdmin con `sudo docker compose --profile admin up -d --wait` e aprire <http://127.0.0.1:8080/>. Alla fine `Ctrl+C` ferma il server PHP e `sudo docker compose down` ferma i contenitori. Il volume Docker conserva i dati fra un avvio e l'altro; `schema.sql` viene eseguito automaticamente solo quando il volume è nuovo.
+
 ## Errori frequenti
 
 | Segnale | Controllo utile |

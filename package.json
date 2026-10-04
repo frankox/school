@@ -14,6 +14,7 @@
     "serve:example": "node scripts/php.mjs serve example",
     "serve:1": "node scripts/php.mjs serve 1",
     "serve:2": "node scripts/php.mjs serve 2",
+    "serve:2:docker": "node scripts/php.mjs serve-docker 2",
     "serve:3": "node scripts/php.mjs serve 3",
     "serve:4": "node scripts/php.mjs serve 4"
   }
