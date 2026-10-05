@@ -48,7 +48,7 @@ Il **repository** raccoglie il codice che accede al database. Prima di implement
 
 ## Prima fase: test senza MariaDB
 
-Aprire PowerShell nella cartella `02-json-student-api` e controllare:
+Aprire PowerShell nella cartella `02-create-student-api` e controllare:
 
 Per farlo da Esplora file, aprire questa cartella, scrivere `powershell` nella barra dell'indirizzo e premere Invio. In un terminale già aperto, `cd percorso-della-cartella` cambia cartella.
 
@@ -126,7 +126,7 @@ sudo ./xampp-linux-*-installer.run
 sudo /opt/lampp/lampp start
 ```
 
-L'installer colloca XAMPP in `/opt/lampp`; il comando `start` avvia Apache e MariaDB. Aprire <http://localhost/phpmyadmin/> e importare `schema.sql` come nella seconda fase. Poi, dalla cartella `02-json-student-api`, verificare il driver e avviare l'API con il PHP di XAMPP:
+L'installer colloca XAMPP in `/opt/lampp`; il comando `start` avvia Apache e MariaDB. Aprire <http://localhost/phpmyadmin/> e importare `schema.sql` come nella seconda fase. Poi, dalla cartella `02-create-student-api`, verificare il driver e avviare l'API con il PHP di XAMPP:
 
 ```bash
 /opt/lampp/bin/php -m
@@ -152,7 +152,7 @@ Se Docker è disponibile, [`compose.yaml`](compose.yaml) avvia MariaDB senza ins
 npm run serve:2:docker
 ```
 
-Il launcher attende che MariaDB sia pronto, verifica `pdo_mysql`, imposta la connessione sulla porta `3307` e avvia l'API sulla porta `8000`. Docker può richiedere `sudo`: il launcher chiede la password solo per Docker, mentre PHP gira con l'utente normale. Lasciare aperto il terminale. Da un secondo terminale, nella cartella `02-json-student-api`, usare i comandi `curl` e `sudo docker compose exec` riportati sotto.
+Il launcher attende che MariaDB sia pronto, verifica `pdo_mysql`, imposta la connessione sulla porta `3307` e avvia l'API sulla porta `8000`. Docker può richiedere `sudo`: il launcher chiede la password solo per Docker, mentre PHP gira con l'utente normale. Lasciare aperto il terminale. Da un secondo terminale, nella cartella `02-create-student-api`, usare i comandi `curl` e `sudo docker compose exec` riportati sotto.
 
 Per eseguire gli stessi passaggi manualmente, da questa cartella:
 

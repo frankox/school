@@ -10,7 +10,7 @@ school/
     └── API/
         ├── 00-example-books-api/
         ├── 01-csv-to-sql-api/
-        ├── 02-json-student-api/
+        ├── 02-create-student-api/
         ├── 03-json-batch-transaction/
         └── 04-order-transaction/
 ```
@@ -28,7 +28,7 @@ npm run serve:2
 npm run serve:2:docker
 ```
 
-`doctor` mostra quale PHP viene usato. `test:2` esegue i test dell'esercizio 02 senza database. `serve:2` avvia l'API sulla porta 8000; ferma il server con `Ctrl+C`. `serve:2:docker` avvia prima MariaDB con Docker e poi l'API, configurando automaticamente il driver PHP e la connessione; su Omarchy può chiedere la password `sudo` per avviare Docker, mentre PHP resta avviato come utente normale. La [prova completa dell'esercizio 02](info/API/02-json-student-api/README.md#prova-su-omarchy-con-docker) spiega come inviare il POST e verificare la riga. Sostituisci `2` con `1`, `3` o `4` per gli altri esercizi; per l'esempio completo usa `npm run serve:example`. I test incompleti falliscono finché non vengono implementati i metodi richiesti.
+`doctor` mostra quale PHP viene usato. `test:2` esegue i test dell'esercizio 02 senza database. `serve:2` avvia l'API sulla porta 8000; ferma il server con `Ctrl+C`. `serve:2:docker` avvia prima MariaDB con Docker e poi l'API, configurando automaticamente il driver PHP e la connessione; su Omarchy può chiedere la password `sudo` per avviare Docker, mentre PHP resta avviato come utente normale. La [prova completa dell'esercizio 02](info/API/02-create-student-api/README.md#con-docker) spiega come inviare il POST e verificare la riga. Sostituisci `2` con `1`, `3` o `4` per gli altri esercizi; per l'esempio completo usa `npm run serve:example`. I test incompleti falliscono finché non vengono implementati i metodi richiesti.
 
 ## Debug dei test in VS Code
 

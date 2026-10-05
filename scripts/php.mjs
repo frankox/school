@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const exercises = {
   1: '01-csv-to-sql-api',
-  2: '02-json-student-api',
+  2: '02-create-student-api',
   3: '03-json-batch-transaction',
   4: '04-order-transaction',
   example: '00-example-books-api',

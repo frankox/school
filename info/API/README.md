@@ -4,7 +4,7 @@ Questi esercizi usano PHP e richieste HTTP. L'ordine suggerito è:
 
 1. [Da CSV a INSERT SQL](01-csv-to-sql-api/README.md): produce SQL, senza scrivere nel database.
 2. [API dei libri completa](00-example-books-api/README.md): esempio funzionante da osservare e adattare.
-3. [Da JSON a risorsa Student](02-json-student-api/README.md): prima `INSERT` reale via API.
+3. [Da JSON a risorsa Student](02-create-student-api/README.md): prima `INSERT` reale via API.
 4. [Importazione batch con transazione](03-json-batch-transaction/README.md).
 5. [Ordine composto e gestione dello stock](04-order-transaction/README.md).
 
