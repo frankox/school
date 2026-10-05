@@ -42,7 +42,7 @@ examples/student.json
 
 Un **client** è il programma che invia la richiesta (qui `curl`); il **server PHP** la riceve. `POST` è il metodo HTTP usato per creare una risorsa. Il **corpo** è il contenuto inviato con la richiesta; `Content-Type: application/json` ne dichiara il formato. La **risposta** contiene uno stato HTTP e un JSON. `201 Created` significa che il record è stato creato.
 
-Un **DTO** (`CreateStudentRequest`) è un oggetto PHP che raccoglie i dati della richiesta. In questo esercizio i nomi del JSON corrispondono alle proprietà del DTO; i nomi delle colonne SQL sono invece `first_name`, `last_name` e `student_code`. `JsonToClassConverter` è un esperimento presente nella cartella `utils`: il suo comportamento iniziale non garantisce che tutti i campi siano presenti, che non ci siano campi in più o che i valori rispettino le regole. I test servono a scoprire e correggere questi casi. Una stampa con `echo` durante l'elaborazione romperebbe la risposta JSON dell'API.
+Un **DTO** (`CreateStudentRequest`) è un oggetto che raccoglie i dati della richiesta. In questo esercizio i nomi del JSON corrispondono alle proprietà del DTO; i nomi delle colonne SQL sono invece `first_name`, `last_name` e `student_code`. `JsonToClassConverter` è un esperimento presente nella cartella `utils`: il suo comportamento iniziale non garantisce che tutti i campi siano presenti, che non ci siano campi in più o che i valori rispettino le regole. I test servono a scoprire e correggere questi casi. Una stampa con `echo` durante l'elaborazione romperebbe la risposta JSON dell'API.
 
 Il **repository** raccoglie il codice che accede al database. Prima di implementarlo, leggete la [guida a PDO e ai tre test progressivi](GUIDA-PDO.md): spiega che cosa rappresentano la connessione, la query preparata, i parametri e l'ID generato.
 
@@ -144,7 +144,7 @@ Il primo comando verifica soltanto che PHP risponda. Il secondo deve rispondere 
 
 Quando la prova è conclusa, `Ctrl+C` ferma il server PHP e `sudo /opt/lampp/lampp stop` ferma XAMPP. Il PHP installato nel sistema e quello in `/opt/lampp/bin/php` possono avere moduli diversi: per questa prova usare sempre il secondo.
 
-### Prova su Omarchy con Docker
+### Con Docker
 
 Se Docker è disponibile, [`compose.yaml`](compose.yaml) avvia MariaDB senza installare XAMPP. La prima volta carica automaticamente `schema.sql` e crea il database `school_ex02`. Il PHP dell'API gira sul computer, mentre il database gira nel contenitore. Dalla **radice del repository** basta avviare:
 
@@ -152,7 +152,7 @@ Se Docker è disponibile, [`compose.yaml`](compose.yaml) avvia MariaDB senza ins
 npm run serve:2:docker
 ```
 
-Il launcher attende che MariaDB sia pronto, verifica `pdo_mysql`, imposta la connessione sulla porta `3307` e avvia l'API sulla porta `8000`. Su Omarchy Docker può richiedere `sudo`: il launcher chiede la password solo per Docker, mentre PHP gira con l'utente normale. Lasciare aperto il terminale. Da un secondo terminale, nella cartella `02-json-student-api`, usare i comandi `curl` e `sudo docker compose exec` riportati sotto.
+Il launcher attende che MariaDB sia pronto, verifica `pdo_mysql`, imposta la connessione sulla porta `3307` e avvia l'API sulla porta `8000`. Docker può richiedere `sudo`: il launcher chiede la password solo per Docker, mentre PHP gira con l'utente normale. Lasciare aperto il terminale. Da un secondo terminale, nella cartella `02-json-student-api`, usare i comandi `curl` e `sudo docker compose exec` riportati sotto.
 
 Per eseguire gli stessi passaggi manualmente, da questa cartella:
 
@@ -160,8 +160,7 @@ Per eseguire gli stessi passaggi manualmente, da questa cartella:
 sudo docker compose up -d --wait db
 php -d extension=pdo_mysql -m
 ```
-
-Il secondo comando deve mostrare `pdo_mysql`. Su questo PC il modulo esiste ma il PHP di sistema non lo carica per impostazione predefinita; l'opzione `-d` lo abilita per il singolo comando. Avviare quindi l'API nel primo terminale:
+Avviare quindi l'API nel primo terminale:
 
 ```bash
 DB_DSN='mysql:host=127.0.0.1;port=3307;dbname=school_ex02;charset=utf8mb4' DB_USER=school_api DB_PASSWORD=school_dev php -d extension=pdo_mysql -S 127.0.0.1:8000 -t public
