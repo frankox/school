@@ -4,27 +4,27 @@
 
 Un'impresa dispone dei rendiconti degli ultimi cinque esercizi, ma non conosce ancora il risultato dell'anno corrente. Per ogni esercizio sono disponibili il **reddito lordo prima delle imposte** e le **imposte**. Il committente chiede una stima del reddito netto dell'anno corrente, dei redditi netti dei prossimi `n` anni e del valore dell'impresa secondo il metodo semplificato della capitalizzazione del reddito medio prospettico.
 
-Scrivi in **TypeScript** la funzione `valutaAzienda` nel file [`src/valutazioneAzienda.ts`](src/valutazioneAzienda.ts). I tipi, la firma e i [test](tests/valutazioneAzienda.test.ts) sono già pronti. Lavora sulla funzione, senza cambiare i risultati attesi nei test.
+Scrivi in **TypeScript** la funzione `valueCompany` nel file [`src/companyValuation.ts`](src/companyValuation.ts). I tipi, la firma e i [test](tests/companyValuation.test.ts) sono già pronti. Lavora sulla funzione, senza cambiare i risultati attesi nei test. Il testo della consegna è in italiano; nomi, commenti e messaggi del codice sono in inglese.
 
 ## Dati in ingresso e risultato
 
 La funzione riceve:
 
-- `bilanci`: **esattamente cinque** oggetti `{ redditoLordo, imposte }`, ordinati dal più vecchio al più recente;
-- `anniProspettici`: il numero intero positivo `n` di anni da stimare;
-- `tassoCapitalizzazione`: un numero positivo in forma decimale, per esempio `0.10` per il 10%.
+- `statements`: **esattamente cinque** oggetti `{ grossIncome, taxes }`, ordinati dal più vecchio al più recente;
+- `projectionYears`: il numero intero positivo `n` di anni da stimare;
+- `capitalizationRate`: un numero positivo in forma decimale, per esempio `0.10` per il 10%.
 
-Tutti gli importi sono espressi nella stessa unità monetaria, per esempio euro. Il risultato deve contenere `redditiNetti` (i cinque redditi storici al netto delle imposte), `redditoAnnoCorrente`, `redditiProspettici` (un elemento per ciascuno dei `n` anni), `redditoMedioProspettico` e `valoreAzienda`.
+Tutti gli importi sono espressi nella stessa unità monetaria, per esempio euro. Il risultato deve contenere `historicalNetIncomes` (i cinque redditi storici al netto delle imposte), `currentYearIncome`, `projectedIncomes` (un elemento per ciascuno dei `n` anni), `averageProjectedIncome` e `companyValue`.
 
 L'**anno corrente** è il primo anno senza rendiconto. È anche il **primo** dei `n` anni prospettici: con `n = 3` devi stimare l'anno corrente e i due successivi. Non aggiungere l'anno corrente una seconda volta alla media.
 
 ## Modello da applicare
 
-1. Per ogni bilancio calcola il reddito netto: `redditoLordo - imposte`.
+1. Per ogni bilancio calcola il reddito netto: `grossIncome - taxes`.
 2. Associa ai cinque redditi netti gli anni `x = 1, 2, 3, 4, 5`. Trova la retta `y = m × x + q` che meglio approssima **tutti e cinque** i punti con il metodo dei minimi quadrati. È il principio della funzione [TENDENZA di Excel](https://support.microsoft.com/it-it/excel/functions/trend-function) per una sola variabile, con intercetta libera.
-3. Usa la retta per prevedere il reddito netto agli anni `x = 6, 7, …, 5 + n`. La previsione per `x = 6` è `redditoAnnoCorrente`.
+3. Usa la retta per prevedere il reddito netto agli anni `x = 6, 7, …, 5 + n`. La previsione per `x = 6` è `currentYearIncome`.
 4. Calcola la media aritmetica di queste `n` previsioni.
-5. Stima il valore aziendale: `valoreAzienda = redditoMedioProspettico / tassoCapitalizzazione`.
+5. Stima il valore aziendale: `companyValue = averageProjectedIncome / capitalizationRate`.
 
 Per calcolare la retta, indica con `ȳ` la media dei cinque redditi netti. Qui la media degli anni `x` è sempre `x̄ = 3`. Puoi usare:
 
@@ -54,8 +54,8 @@ Se un input non rispetta queste regole, lancia un `RangeError`:
 
 - i bilanci devono essere esattamente cinque;
 - redditi lordi e imposte devono essere numeri finiti, non negativi; le imposte non possono superare il reddito lordo dello stesso anno;
-- `anniProspettici` deve essere un intero positivo;
-- `tassoCapitalizzazione` deve essere finito e maggiore di zero.
+- `projectionYears` deve essere un intero positivo;
+- `capitalizationRate` deve essere finito e maggiore di zero.
 
 Non arrotondare i calcoli intermedi: i test confrontano i risultati numerici con una piccola tolleranza. Questa è una **stima didattica**: la tendenza lineare può dare previsioni economicamente poco plausibili se proiettata troppo lontano. Il tasso è un'ipotesi fornita dal committente; la funzione non deve ricavarlo dai bilanci.
 
