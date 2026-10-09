@@ -4,7 +4,7 @@
 
 Un'impresa dispone dei rendiconti degli ultimi cinque esercizi, ma non conosce ancora il risultato dell'anno corrente. Per ogni esercizio sono disponibili il **reddito lordo prima delle imposte** e le **imposte**. Il committente chiede una stima del reddito netto dell'anno corrente, dei redditi netti dei prossimi `n` anni e del valore dell'impresa secondo il metodo semplificato della capitalizzazione del reddito medio prospettico.
 
-Scrivi in **TypeScript** la funzione `valueCompany` nel file [`src/companyValuation.ts`](src/companyValuation.ts). I tipi, la firma e i [test](tests/companyValuation.test.ts) sono già pronti. Lavora sulla funzione, senza cambiare i risultati attesi nei test. Il testo della consegna è in italiano; nomi, commenti e messaggi del codice sono in inglese.
+Scrivi in **TypeScript** la funzione `valueCompany` nel file [`src/companyEvaluation.ts`](src/companyEvaluation.ts). I tipi, la firma e i [test](tests/companyEvaluation.test.ts) sono già pronti. Lavora sulla funzione, senza cambiare i risultati attesi nei test. Il testo della consegna è in italiano; nomi, commenti e messaggi del codice sono in inglese.
 
 ## Dati in ingresso e risultato
 
@@ -73,3 +73,7 @@ npm test
 Procedi nell'ordine suggerito dai test: controlla gli input, calcola i cinque redditi netti, ricava la retta, genera le previsioni, calcola media e valore aziendale. Un test sulla serie irregolare verifica che tu usi tutti e cinque i bilanci; quelli sulla serie costante e decrescente aiutano a controllare la formula della tendenza. Se un test fallisce, il suo nome indica quale comportamento manca.
 
 Puoi consultare la [documentazione Microsoft di TENDENZA](https://support.microsoft.com/it-it/excel/functions/trend-function) per confrontare il metodo statistico. La funzione TypeScript va comunque scritta da te: non serve Excel per eseguire l'esercizio.
+
+### Se l'editor segnala errori sugli import `node:`
+
+Se `npm run build` riesce ma l'editor indica che `node:test` o `node:assert/strict` non esistono, controlla che il file di test appartenga al progetto definito da questo `tsconfig.json` e che la cartella `node_modules/@types/node` sia presente. In VS Code, con il test aperto, usa **TypeScript: Go to Project Configuration**: deve aprire il `tsconfig.json` di questo esercizio. Poi scegli **TypeScript: Select TypeScript Version → Use Workspace Version** e riavvia il server TypeScript dall'elenco comandi. L'editor può usare una versione di TypeScript diversa da quella che esegue `npm run build`; la [guida di VS Code](https://code.visualstudio.com/docs/typescript/typescript-transpiling#_using-newer-typescript-versions) spiega come selezionarla.
