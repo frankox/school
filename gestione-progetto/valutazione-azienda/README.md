@@ -2,39 +2,39 @@
 
 ## Situazione aziendale
 
-Un'impresa dispone dei rendiconti degli ultimi cinque esercizi, ma non conosce ancora il risultato dell'anno corrente. Per ogni esercizio sono disponibili il **reddito lordo prima delle imposte** e le **imposte**. Il committente chiede una stima del reddito netto dell'anno corrente, dei redditi netti dei prossimi `n` anni e del valore dell'impresa secondo il metodo semplificato della capitalizzazione del reddito medio prospettico.
+Un'impresa dispone dei rendiconti di almeno cinque esercizi consecutivi, ma non conosce ancora il risultato dell'anno corrente. Per ogni esercizio sono disponibili il **reddito lordo prima delle imposte** e le **imposte**. Il committente chiede una stima del reddito netto dell'anno corrente, dei redditi netti dei prossimi `n` anni e del valore dell'impresa secondo il metodo semplificato della capitalizzazione del reddito medio prospettico.
 
-Scrivi in **TypeScript** la funzione `valueCompany` nel file [`src/companyEvaluation.ts`](src/companyEvaluation.ts). I tipi, la firma e i [test](tests/companyEvaluation.test.ts) sono già pronti. Lavora sulla funzione, senza cambiare i risultati attesi nei test. Il testo della consegna è in italiano; nomi, commenti e messaggi del codice sono in inglese.
+Scrivi in **TypeScript** la funzione `getCompanyValuation` nel file [`src/companyEvaluation.ts`](src/companyEvaluation.ts). I tipi, la firma e i [test](tests/companyEvaluation.test.ts) sono già pronti. Lavora sulla funzione, senza cambiare i risultati attesi nei test. Il testo della consegna è in italiano; nomi, commenti e messaggi del codice sono in inglese.
 
 ## Dati in ingresso e risultato
 
 La funzione riceve:
 
-- `statements`: **esattamente cinque** oggetti `{ grossIncome, taxes }`, ordinati dal più vecchio al più recente;
+- `statements`: **almeno cinque** oggetti `{ grossIncome, taxes }`, ordinati dal più vecchio al più recente;
 - `projectionYears`: il numero intero positivo `n` di anni da stimare;
 - `capitalizationRate`: un numero positivo in forma decimale, per esempio `0.10` per il 10%.
 
-Tutti gli importi sono espressi nella stessa unità monetaria, per esempio euro. Il risultato deve contenere `historicalNetIncomes` (i cinque redditi storici al netto delle imposte), `currentYearIncome`, `projectedIncomes` (un elemento per ciascuno dei `n` anni), `averageProjectedIncome` e `companyValue`.
+Tutti gli importi sono espressi nella stessa unità monetaria, per esempio euro. Il risultato deve contenere `historicalNetIncomes` (un reddito netto per ogni bilancio storico), `currentYearIncome`, `projectedIncomes` (un elemento per ciascuno dei `n` anni), `averageProjectedIncome` e `companyValue`.
 
 L'**anno corrente** è il primo anno senza rendiconto. È anche il **primo** dei `n` anni prospettici: con `n = 3` devi stimare l'anno corrente e i due successivi. Non aggiungere l'anno corrente una seconda volta alla media.
 
 ## Modello da applicare
 
 1. Per ogni bilancio calcola il reddito netto: `grossIncome - taxes`.
-2. Associa ai cinque redditi netti gli anni `x = 1, 2, 3, 4, 5`. Trova la retta `y = m × x + q` che meglio approssima **tutti e cinque** i punti con il metodo dei minimi quadrati. È il principio della funzione [TENDENZA di Excel](https://support.microsoft.com/it-it/excel/functions/trend-function) per una sola variabile, con intercetta libera.
-3. Usa la retta per prevedere il reddito netto agli anni `x = 6, 7, …, 5 + n`. La previsione per `x = 6` è `currentYearIncome`.
+2. Se i bilanci sono `k`, associa ai redditi netti gli anni `x = 1, 2, …, k`. Trova la retta `y = m × x + q` che meglio approssima **tutti** i punti con il metodo dei minimi quadrati. È il principio della funzione [TENDENZA di Excel](https://support.microsoft.com/it-it/excel/functions/trend-function) per una sola variabile, con intercetta libera.
+3. Usa la retta per prevedere il reddito netto agli anni `x = k + 1, k + 2, …, k + n`. La previsione per `x = k + 1` è `currentYearIncome`.
 4. Calcola la media aritmetica di queste `n` previsioni.
 5. Stima il valore aziendale: `companyValue = averageProjectedIncome / capitalizationRate`.
 
-Per calcolare la retta, indica con `ȳ` la media dei cinque redditi netti. Qui la media degli anni `x` è sempre `x̄ = 3`. Puoi usare:
+Per calcolare la retta, indica con `ȳ` la media dei `k` redditi netti. La media degli anni `x` è `x̄ = (k + 1) / 2`. Puoi usare:
 
 ```text
-m = Σ[(x - 3) × (y - ȳ)] / Σ[(x - 3)²]
-q = ȳ - m × 3
+m = Σ[(x - x̄) × (y - ȳ)] / Σ[(x - x̄)²]
+q = ȳ - m × x̄
 previsione(x) = m × x + q
 ```
 
-La sommatoria `Σ` comprende i cinque anni storici. Il denominatore vale `10`, ma è utile capire da dove viene. Non usare soltanto la differenza fra il primo e l'ultimo reddito: i tre valori intermedi devono influenzare la previsione.
+La sommatoria `Σ` comprende tutti i `k` anni storici. Con cinque bilanci il denominatore vale `10`; con più bilanci cambia. Non usare soltanto la differenza fra il primo e l'ultimo reddito: tutti i valori intermedi devono influenzare la previsione.
 
 ### Esempio da controllare a mano
 
@@ -52,7 +52,7 @@ La retta ottenuta ha pendenza `23 000` e intercetta `81 000`. Con `n = 3` le pre
 
 Se un input non rispetta queste regole, lancia un `RangeError`:
 
-- i bilanci devono essere esattamente cinque;
+- i bilanci devono essere almeno cinque;
 - redditi lordi e imposte devono essere numeri finiti, non negativi; le imposte non possono superare il reddito lordo dello stesso anno;
 - `projectionYears` deve essere un intero positivo;
 - `capitalizationRate` deve essere finito e maggiore di zero.
@@ -70,7 +70,7 @@ npm test
 
 `npm install` installa TypeScript e gli strumenti necessari per i test. `npm test` compila i file `.ts` e poi esegue i test. All'inizio i test falliscono perché la funzione contiene soltanto un segnaposto: è previsto. Quando modifichi il codice, riesegui `npm test`. Il lavoro è completo quando tutti i test passano.
 
-Procedi nell'ordine suggerito dai test: controlla gli input, calcola i cinque redditi netti, ricava la retta, genera le previsioni, calcola media e valore aziendale. Un test sulla serie irregolare verifica che tu usi tutti e cinque i bilanci; quelli sulla serie costante e decrescente aiutano a controllare la formula della tendenza. Se un test fallisce, il suo nome indica quale comportamento manca.
+Procedi nell'ordine suggerito dai test: controlla gli input, calcola i redditi netti di tutti i bilanci, ricava la retta, genera le previsioni, calcola media e valore aziendale. Un test sulla serie irregolare verifica che tu usi tutti i bilanci; quelli sulla serie costante e decrescente aiutano a controllare la formula della tendenza. Se un test fallisce, il suo nome indica quale comportamento manca.
 
 Puoi consultare la [documentazione Microsoft di TENDENZA](https://support.microsoft.com/it-it/excel/functions/trend-function) per confrontare il metodo statistico. La funzione TypeScript va comunque scritta da te: non serve Excel per eseguire l'esercizio.
 

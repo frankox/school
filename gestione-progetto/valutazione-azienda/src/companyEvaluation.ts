@@ -12,11 +12,11 @@ export type CompanyValuation = {
 };
 
 /**
- * The five statements are ordered from oldest to newest.
+ * At least five statements are ordered from oldest to newest.
  * `projectionYears` includes the current year, the first without a statement.
  * `capitalizationRate` is a decimal: 0.10 means 10%.
  */
-export function valueCompany(
+export function getCompanyValuation(
   statements: readonly AnnualStatement[],
   projectionYears: number,
   capitalizationRate: number,
