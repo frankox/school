@@ -4,18 +4,20 @@ Questo repository raccoglie esercizi per gli studenti, organizzati per materia e
 
 ```text
 school/
-└── info/
-    ├── sql/
-    │   └── fondamenti-sql/
-    └── API/
-        ├── 00-example-books-api/
-        ├── 01-csv-to-sql-api/
-        ├── 02-create-student-api/
-        ├── 03-json-batch-transaction/
-        └── 04-order-transaction/
+├── info/
+│   ├── sql/
+│   │   └── fondamenti-sql/
+│   └── API/
+│       ├── 00-example-books-api/
+│       ├── 01-csv-to-sql-api/
+│       ├── 02-create-student-api/
+│       ├── 03-json-batch-transaction/
+│       └── 04-order-transaction/
+└── gestione-progetto/
+    └── valutazione-azienda/
 ```
 
-Per iniziare, apri [Informatica](info/README.md), scegli un argomento e leggi il `README.md` del materiale. Ogni esercizio spiega obiettivo, preparazione e comandi per provarlo.
+Per iniziare, scegli [Informatica](info/README.md) o [Gestione progetto](gestione-progetto/README.md) e leggi il `README.md` del materiale. Ogni esercizio spiega obiettivo, preparazione e comandi per provarlo.
 
 ## Comandi rapidi per le API
 
