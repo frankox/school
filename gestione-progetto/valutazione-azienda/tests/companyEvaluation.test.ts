@@ -2,7 +2,13 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { getCompanyValuation, type AnnualStatement } from '../src/companyEvaluation.js';
 
-function assertClose(actual: number, expected: number): void {
+function assertClose(actual?: number, expected?: number): void {
+  assert.notEqual(actual, undefined, 'actual is undefined');
+  assert.notEqual(expected, undefined, 'expected is undefined');
+  if (actual === undefined || expected === undefined) {
+    return;
+  }
+
   assert.ok(
     Math.abs(actual - expected) < 1e-8,
     `Expected ${expected}, got ${actual}`,
@@ -30,7 +36,7 @@ test('fits a linear trend using all five years to predict the current year', () 
 
 test('projects n years starting with the current year and averages them', () => {
   const result = getCompanyValuation(variableStatements, 3, 0.10);
-  assert.equal(result.projectedIncomes.length, 3);
+  assert.equal(result.projectedIncomes?.length, 3);
   result.projectedIncomes.forEach((income, index) => {
     assertClose(income, [219_000, 242_000, 265_000][index]);
   });
@@ -44,7 +50,7 @@ test('capitalizes the average projected income using the given rate', () => {
 
 test('one projection year makes the average equal to the current-year forecast', () => {
   const result = getCompanyValuation(variableStatements, 1, 0.20);
-  assert.equal(result.projectedIncomes.length, 1);
+  assert.equal(result.projectedIncomes?.length, 1);
   assertClose(result.averageProjectedIncome, 219_000);
   assertClose(result.companyValue, 1_095_000);
 });
@@ -52,7 +58,7 @@ test('one projection year makes the average equal to the current-year forecast',
 test('a constant series has no projected growth', () => {
   const statements = Array.from({ length: 5 }, () => ({ grossIncome: 120_000, taxes: 20_000 }));
   const result = getCompanyValuation(statements, 4, 0.10);
-  result.projectedIncomes.forEach((income) => assertClose(income, 100_000));
+  result.projectedIncomes?.forEach((income) => assertClose(income, 100_000));
   assertClose(result.averageProjectedIncome, 100_000);
 });
 
@@ -60,7 +66,7 @@ test('also handles a declining trend', () => {
   const statements = [200_000, 180_000, 160_000, 140_000, 120_000]
     .map((grossIncome) => ({ grossIncome, taxes: 0 }));
   const result = getCompanyValuation(statements, 2, 0.20);
-  result.projectedIncomes.forEach((income, index) => {
+  result.projectedIncomes?.forEach((income, index) => {
     assertClose(income, [100_000, 80_000][index]);
   });
   assertClose(result.averageProjectedIncome, 90_000);

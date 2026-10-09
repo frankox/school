@@ -4,11 +4,11 @@ export type AnnualStatement = {
 };
 
 export type CompanyValuation = {
-  historicalNetIncomes: number[];
-  currentYearIncome: number;
-  projectedIncomes: number[];
-  averageProjectedIncome: number;
-  companyValue: number;
+  historicalNetIncomes?: number[];
+  currentYearIncome?: number;
+  projectedIncomes?: number[];
+  averageProjectedIncome?: number;
+  companyValue?: number;
 };
 
 /**

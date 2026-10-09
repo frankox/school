@@ -2,7 +2,7 @@
 
 ## Situazione aziendale
 
-Un'impresa dispone dei rendiconti di almeno cinque esercizi consecutivi, ma non conosce ancora il risultato dell'anno corrente. Per ogni esercizio sono disponibili il **reddito lordo prima delle imposte** e le **imposte**. Il committente chiede una stima del reddito netto dell'anno corrente, dei redditi netti dei prossimi `n` anni e del valore dell'impresa secondo il metodo semplificato della capitalizzazione del reddito medio prospettico.
+Un'impresa dispone dei rendiconti di almeno cinque esercizi consecutivi, ma non conosce ancora il risultato dell'anno corrente. Per ogni esercizio sono disponibili l'**utile dell'azienda prima delle imposte** e le **imposte**. Il committente chiede una stima dell'utile netto dell'anno corrente, degli utili netti dei prossimi `n` anni e del valore dell'impresa secondo il metodo semplificato della capitalizzazione del reddito medio prospettico. In questa consegna, «reddito» indica sempre l'utile dell'azienda, non lo stipendio di un dipendente o il reddito personale di un socio.
 
 Scrivi in **TypeScript** la funzione `getCompanyValuation` nel file [`src/companyEvaluation.ts`](src/companyEvaluation.ts). I tipi, la firma e i [test](tests/companyEvaluation.test.ts) sono già pronti. Lavora sulla funzione, senza cambiare i risultati attesi nei test. Il testo della consegna è in italiano; nomi, commenti e messaggi del codice sono in inglese.
 
@@ -10,9 +10,9 @@ Scrivi in **TypeScript** la funzione `getCompanyValuation` nel file [`src/compan
 
 La funzione riceve:
 
-- `statements`: **almeno cinque** oggetti `{ grossIncome, taxes }`, ordinati dal più vecchio al più recente;
+- `statements`: **almeno cinque** oggetti `{ grossIncome, taxes }`, ordinati dal più vecchio al più recente. In questo esercizio `grossIncome` è l'**utile aziendale prima delle imposte**: l'azienda ha già sottratto dai ricavi i costi, tra cui gli stipendi. Non è il fatturato. `taxes` sono le imposte dell'azienda sullo stesso utile. Il **reddito netto** (o **utile netto**) è ciò che resta all'azienda dopo le imposte: `grossIncome - taxes`. Può essere trattenuto nell'azienda o distribuito ai soci. Per esempio, con `grossIncome = 125 000` euro e `taxes = 25 000` euro, l'utile netto è `100 000` euro;
 - `projectionYears`: il numero intero positivo `n` di anni da stimare;
-- `capitalizationRate`: un numero positivo in forma decimale, per esempio `0.10` per il 10%.
+- `capitalizationRate`: il **tasso di capitalizzazione**, un numero positivo in forma decimale (`0.10` significa 10%). **Non serve per prevedere gli utili né per calcolare `averageProjectedIncome`**: per quelli bastano la regressione e la media. Serve solo per stimare `companyValue`. L'utile medio, per esempio `242 000` euro *all'anno*, dice quanto si prevede che l'azienda guadagni ogni anno, ma non quanto valga l'azienda. Il tasso stabilisce quale rapporto ipotizzare tra quell'utile annuo e il valore: con `0.10`, un valore di `100` euro corrisponde a `10` euro di utile netto annuo. Quindi `companyValue = averageProjectedIncome / capitalizationRate = 242 000 / 0.10 = 2 420 000` euro. Con lo stesso utile e un tasso di `0.20` (20%), il valore sarebbe `1 210 000` euro. Il committente fornisce il tasso perché la scelta di questo rapporto dipende dalle ipotesi di valutazione, non si ricava dai soli utili passati.
 
 Tutti gli importi sono espressi nella stessa unità monetaria, per esempio euro. Il risultato deve contenere `historicalNetIncomes` (un reddito netto per ogni bilancio storico), `currentYearIncome`, `projectedIncomes` (un elemento per ciascuno dei `n` anni), `averageProjectedIncome` e `companyValue`.
 
@@ -25,6 +25,15 @@ L'**anno corrente** è il primo anno senza rendiconto. È anche il **primo** dei
 3. Usa la retta per prevedere il reddito netto agli anni `x = k + 1, k + 2, …, k + n`. La previsione per `x = k + 1` è `currentYearIncome`.
 4. Calcola la media aritmetica di queste `n` previsioni.
 5. Stima il valore aziendale: `companyValue = averageProjectedIncome / capitalizationRate`.
+
+Nella retta `y = m × x + q`:
+
+- `x` è il numero progressivo dell'anno: `1` per il bilancio più vecchio, `k` per l'ultimo bilancio disponibile e `k + 1` per l'anno corrente;
+- `y` è il reddito netto associato a quell'anno: per gli anni storici si calcola come `grossIncome - taxes`, mentre per gli anni futuri è il valore previsto dalla retta;
+- `m` è la **pendenza**: indica di quanto cambia il reddito netto previsto quando `x` aumenta di un anno. Può essere positiva, negativa o zero;
+- `q` è l'**intercetta**: il valore che la retta avrebbe per `x = 0`. Serve a posizionare la retta, anche se l'anno `0` non è un bilancio da valutare.
+
+La retta approssima i redditi storici: non deve necessariamente passare per ciascuno dei punti osservati. Una volta trovati `m` e `q`, inserisci nella formula il numero dell'anno da prevedere. Per esempio, con cinque bilanci la previsione dell'anno corrente usa `x = 6`, quindi `y = m × 6 + q`.
 
 Per calcolare la retta, indica con `ȳ` la media dei `k` redditi netti. La media degli anni `x` è `x̄ = (k + 1) / 2`. Puoi usare:
 
