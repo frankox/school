@@ -24,7 +24,9 @@ L'**anno corrente** è il primo anno senza rendiconto. È anche il **primo** dei
 2. Se i bilanci sono `k`, associa ai redditi netti gli anni `x = 1, 2, …, k`. Trova la retta `y = m × x + q` che meglio approssima **tutti** i punti con il metodo dei minimi quadrati. È il principio della funzione [TENDENZA di Excel](https://support.microsoft.com/it-it/excel/functions/trend-function) per una sola variabile, con intercetta libera.
 3. Usa la retta per prevedere il reddito netto agli anni `x = k + 1, k + 2, …, k + n`. La previsione per `x = k + 1` è `currentYearIncome`.
 4. Calcola la media aritmetica di queste `n` previsioni.
-5. Stima il valore aziendale: `companyValue = averageProjectedIncome / capitalizationRate`.
+5. Stima il valore aziendale: `companyValue = averageProjectedIncome / capitalizationRate`. È un modello semplificato di capitalizzazione: tratta l'utile medio previsto come un utile annuo rappresentativo che l'azienda potrebbe produrre stabilmente nel tempo. La formula non è una legge che determina il prezzo effettivo di qualsiasi azienda; il risultato dipende anche dal tasso scelto.
+
+La divisione nasce dall'ipotesi del modello: `utile medio annuo = valore aziendale × tasso di capitalizzazione`. Se conosci l'utile medio e il tasso, ricavi il valore dividendo l'utile per il tasso.
 
 Nella retta `y = m × x + q`:
 

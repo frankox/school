@@ -23,6 +23,53 @@ const variableStatements: AnnualStatement[] = [
   { grossIncome: 250_000, taxes: 50_000 },
 ];
 
+test('rejects fewer than five statements', () => {
+  for (const count of [0, 4]) {
+    assert.throws(() => getCompanyValuation(variableStatements.slice(0, count), 3, 0.10), RangeError);
+  }
+});
+
+test('rejects projection years that are not positive integers', () => {
+  for (const years of [0, -1, 1.5, Infinity, -Infinity, NaN]) {
+    assert.throws(() => getCompanyValuation(variableStatements, years, 0.10), RangeError);
+  }
+});
+
+test('rejects capitalization rates that are not positive finite numbers', () => {
+  for (const rate of [0, -0.1, Infinity, -Infinity, NaN]) {
+    assert.throws(() => getCompanyValuation(variableStatements, 3, rate), RangeError);
+  }
+});
+
+test('rejects negative or non-finite gross income', () => {
+  for (const grossIncome of [-1, Infinity, -Infinity, NaN]) {
+    const statements = [{ grossIncome, taxes: 0 }, ...variableStatements.slice(1)];
+    assert.throws(() => getCompanyValuation(statements, 3, 0.10), RangeError);
+  }
+});
+
+test('rejects negative, excessive, or non-finite taxes', () => {
+  for (const taxes of [-1, 101, Infinity, -Infinity, NaN]) {
+    const statements = [{ grossIncome: 100, taxes }, ...variableStatements.slice(1)];
+    assert.throws(() => getCompanyValuation(statements, 3, 0.10), RangeError);
+  }
+});
+
+test('validates statements beyond the first five', () => {
+  const statements = [...variableStatements, { grossIncome: 100, taxes: 101 }];
+  assert.throws(() => getCompanyValuation(statements, 3, 0.10), RangeError);
+});
+
+test('accepts zero income and taxes equal to gross income', () => {
+  const statements = [
+    { grossIncome: 0, taxes: 0 },
+    { grossIncome: 100, taxes: 100 },
+    ...variableStatements.slice(2),
+  ];
+  const result = getCompanyValuation(statements, 1, 0.10);
+  assert.deepEqual(result.historicalNetIncomes?.slice(0, 2), [0, 0]);
+});
+
 test('subtracts taxes from income for all five historical years', () => {
   const result = getCompanyValuation(variableStatements, 3, 0.10);
   assert.deepEqual(result.historicalNetIncomes, [100_000, 150_000, 120_000, 180_000, 200_000]);
@@ -73,10 +120,6 @@ test('also handles a declining trend', () => {
   assertClose(result.companyValue, 450_000);
 });
 
-test('rejects fewer than five statements', () => {
-  assert.throws(() => getCompanyValuation(variableStatements.slice(1), 3, 0.10), RangeError);
-});
-
 test('uses all six statements to fit the trend and forecast from the seventh year', () => {
   const statements = [...variableStatements, { grossIncome: 290_000, taxes: 50_000 }];
   const result = getCompanyValuation(statements, 2, 0.10);
@@ -85,24 +128,4 @@ test('uses all six statements to fit the trend and forecast from the seventh yea
   assert.deepEqual(result.projectedIncomes, [256_000, 282_000]);
   assertClose(result.averageProjectedIncome, 269_000);
   assertClose(result.companyValue, 2_690_000);
-});
-
-test('rejects invalid income and taxes', () => {
-  const withFirstStatement = (statement: AnnualStatement) =>
-    getCompanyValuation([statement, ...variableStatements.slice(1)], 3, 0.10);
-
-  assert.throws(() => withFirstStatement({ grossIncome: -1, taxes: 0 }), RangeError);
-  assert.throws(() => withFirstStatement({ grossIncome: Infinity, taxes: 0 }), RangeError);
-  assert.throws(() => withFirstStatement({ grossIncome: 100, taxes: -1 }), RangeError);
-  assert.throws(() => withFirstStatement({ grossIncome: 100, taxes: 101 }), RangeError);
-  assert.throws(() => withFirstStatement({ grossIncome: 100, taxes: NaN }), RangeError);
-});
-
-test('rejects an invalid projection period or capitalization rate', () => {
-  for (const years of [0, -1, 1.5, Infinity]) {
-    assert.throws(() => getCompanyValuation(variableStatements, years, 0.10), RangeError);
-  }
-  for (const rate of [0, -0.1, Infinity, NaN]) {
-    assert.throws(() => getCompanyValuation(variableStatements, 3, rate), RangeError);
-  }
 });
