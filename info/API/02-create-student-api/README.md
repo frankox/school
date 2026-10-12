@@ -1,5 +1,7 @@
 # Esercizio 02 — Da JSON a studente nel database
 
+Per lavorare con il solo Docker, andare direttamente alla sezione [Con Docker](#con-docker): include test, API, MariaDB e phpMyAdmin.
+
 ## Cosa cambia rispetto al primo esercizio
 
 Nel primo esercizio l'API **produce il testo di una query SQL**: anche se la risposta contiene `INSERT`, nessuna riga viene salvata. In questo secondo esercizio l'API **si collega a MariaDB e inserisce davvero uno studente** nella tabella `students` del vostro XAMPP. Dopo una chiamata riuscita potete vederlo in phpMyAdmin con `SELECT * FROM students;`.
@@ -146,34 +148,16 @@ Quando la prova è conclusa, `Ctrl+C` ferma il server PHP e `sudo /opt/lampp/lam
 
 ### Con Docker
 
-Se Docker è disponibile, [`compose.yaml`](compose.yaml) avvia MariaDB senza installare XAMPP. La prima volta carica automaticamente `schema.sql` e crea il database `school_ex02`. Il PHP dell'API gira sul computer, mentre il database gira nel contenitore. Dalla **radice del repository** basta avviare:
+Aprire un terminale in questa cartella. Docker esegue PHP, MariaDB e il client HTTP: sul computer non servono PHP, Node.js, npm, XAMPP o curl. `schema.sql` viene caricato al primo avvio.
 
 ```bash
-npm run serve:2:docker
+docker compose run --build --rm test
+docker compose up -d --build --wait
+docker compose run --rm client -i -X POST -H "Content-Type: application/json" --data-binary "@examples/student.json" http://app:8000/api/students.php
+docker compose exec db mariadb -u school_user -pschool_dev school_ex02 -e "SELECT id, first_name, last_name, age, student_code FROM students;"
 ```
 
-Il launcher attende che MariaDB sia pronto, verifica `pdo_mysql`, imposta la connessione sulla porta `3307` e avvia l'API sulla porta `8000`. Docker può richiedere `sudo`: il launcher chiede la password solo per Docker, mentre PHP gira con l'utente normale. Lasciare aperto il terminale. Da un secondo terminale, nella cartella `02-create-student-api`, usare i comandi `curl` e `sudo docker compose exec` riportati sotto.
-
-Per eseguire gli stessi passaggi manualmente, da questa cartella:
-
-```bash
-sudo docker compose up -d --wait db
-php -d extension=pdo_mysql -m
-```
-Avviare quindi l'API nel primo terminale:
-
-```bash
-DB_DSN='mysql:host=127.0.0.1;port=3307;dbname=school_ex02;charset=utf8mb4' DB_USER=school_api DB_PASSWORD=school_dev php -d extension=pdo_mysql -S 127.0.0.1:8000 -t public
-```
-
-La porta `8000` serve la richiesta HTTP; Docker espone MariaDB solo sul computer locale alla porta `3307`. Nel secondo terminale, sempre da questa cartella:
-
-```bash
-curl -i -X POST -H 'Content-Type: application/json' --data-binary @examples/student.json http://127.0.0.1:8000/api/students.php
-sudo docker compose exec db mariadb -u school_api -pschool_dev school_ex02 -e 'SELECT id, first_name, last_name, age, student_code FROM students;'
-```
-
-La risposta `201 Created` indica che l'API ha completato la richiesta; la `SELECT` mostra la riga realmente salvata. Per una verifica visiva, avviare anche phpMyAdmin con `sudo docker compose --profile admin up -d --wait` e aprire <http://127.0.0.1:8080/>. Alla fine `Ctrl+C` ferma il server PHP e `sudo docker compose down` ferma i contenitori. Il volume Docker conserva i dati fra un avvio e l'altro; `schema.sql` viene eseguito automaticamente solo quando il volume è nuovo.
+Alcuni test falliscono finché l'esercizio non è completo. La risposta `201 Created` indica che la riga è stata inserita; la `SELECT` la mostra. Per phpMyAdmin eseguire `docker compose --profile admin up -d --wait` e aprire <http://127.0.0.1:8080/> con utente `school_user` e password `school_dev`. `docker compose down` ferma i container e conserva i dati; `docker compose down -v` cancella il database di questo esercizio. [Guida Docker comune](../../../DOCKER.md).
 
 ## Errori frequenti
 

@@ -1,5 +1,24 @@
 # Fondamenti SQL — interrogare e modificare dati
 
+## Con Docker (solo Docker richiesto)
+
+Aprire un terminale nella cartella `info/sql/fondamenti-sql`:
+
+```bash
+docker compose up -d --wait
+docker compose exec db mariadb -u school_user -pschool_dev school_lab
+```
+
+Nel client MariaDB eseguire le query qui sotto e terminare ogni query con `;`. Scrivere `exit` per uscire. In alternativa aprire <http://127.0.0.1:8080/> e usare phpMyAdmin con utente `school_user` e password `school_dev`. Lo schema e le tre righe iniziali vengono caricati al primo avvio.
+
+```bash
+docker compose down
+```
+
+Questo ferma i container e conserva le modifiche. Per ripartire dai dati iniziali eseguire `docker compose down -v` e poi `docker compose up -d --wait`: `down -v` cancella tutti i dati di questo laboratorio. [Guida Docker comune](../../../DOCKER.md).
+
+
+
 Questo percorso si svolge **senza PHP**. Si lavora direttamente in MariaDB per imparare a leggere e modificare dati, osservare una relazione 1:n e capire gli effetti delle query. Può essere svolto da solo oppure prima degli esercizi API.
 
 ## Preparare il database

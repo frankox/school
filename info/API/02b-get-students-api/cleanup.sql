@@ -1,0 +1,1 @@
+DROP DATABASE IF EXISTS school_ex02_get;

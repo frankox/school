@@ -1,5 +1,21 @@
 # Esercizio 03 — Importazione batch con transazione
 
+## Con Docker (solo Docker richiesto)
+
+Aprire un terminale in questa cartella. I test girano nel container PHP; il database per la prova HTTP viene inizializzato al primo avvio.
+
+```bash
+docker compose run --build --rm test
+docker compose up -d --build --wait
+docker compose run --rm client -i -X POST -H "Content-Type: application/json" --data-binary "@examples/students.json" http://app:8000/api/students-batch.php
+docker compose exec db mariadb -u school_user -pschool_dev school_ex03 -e "SELECT * FROM students;"
+docker compose --profile admin up -d --wait
+```
+
+La risposta `{"inserted":2}` arriva quando il metodo è completo. phpMyAdmin è su <http://127.0.0.1:8080/> (utente `school_user`, password `school_dev`). `docker compose down` ferma i container; `docker compose down -v` elimina i dati di questo esercizio. [Guida Docker comune](../../../DOCKER.md).
+
+
+
 ## Obiettivo
 
 Completare `StudentBatchImporter::import()` per ricevere un array JSON di

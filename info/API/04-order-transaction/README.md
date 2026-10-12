@@ -1,5 +1,21 @@
 # Esercizio 04 — Ordine composto e gestione dello stock
 
+## Con Docker (solo Docker richiesto)
+
+Aprire un terminale in questa cartella. Lo schema crea clienti e prodotti di esempio al primo avvio.
+
+```bash
+docker compose run --build --rm test
+docker compose up -d --build --wait
+docker compose run --rm client -i -X POST -H "Content-Type: application/json" --data-binary "@examples/order.json" http://app:8000/api/orders.php
+docker compose exec db mariadb -u school_user -pschool_dev shop_ex04 -e "SELECT * FROM orders; SELECT * FROM order_items; SELECT * FROM products;"
+docker compose --profile admin up -d --wait
+```
+
+phpMyAdmin è su <http://127.0.0.1:8080/> (utente `school_user`, password `school_dev`). `docker compose down` ferma i container; `docker compose down -v` elimina i dati e ripristina quelli iniziali al prossimo avvio. [Guida Docker comune](../../../DOCKER.md).
+
+
+
 ## Obiettivo
 
 Completare `OrderService::create()` per salvare una risorsa composta da un

@@ -11,6 +11,7 @@ school/
 │       ├── 00-example-books-api/
 │       ├── 01-csv-to-sql-api/
 │       ├── 02-create-student-api/
+│       ├── 02b-get-students-api/
 │       ├── 03-json-batch-transaction/
 │       └── 04-order-transaction/
 └── gestione-progetto/
@@ -19,6 +20,10 @@ school/
 
 Per iniziare, scegli [Informatica](info/README.md) o [Gestione progetto](gestione-progetto/README.md) e leggi il `README.md` del materiale. Ogni esercizio spiega obiettivo, preparazione e comandi per provarlo.
 
+## Avvio con solo Docker
+
+Ogni esercizio ha un `compose.yaml` nella propria cartella. Con Docker e `docker compose` puoi eseguire test, API e database senza installare PHP, Node.js, npm, MariaDB o curl sul computer. Apri un terminale nella cartella dell'esercizio e segui [la guida Docker](DOCKER.md) o il suo README. Il codice resta nei file del progetto e viene letto dai container; la prima esecuzione richiede Internet per scaricare immagini e dipendenze.
+
 ## Comandi rapidi per le API
 
 Apri un terminale nella cartella `school`. Con Node.js e PHP installati, `npm install` prepara il progetto; qui non ci sono pacchetti npm esterni da scaricare. I comandi seguenti sono scorciatoie per avviare PHP:
@@ -26,11 +31,12 @@ Apri un terminale nella cartella `school`. Con Node.js e PHP installati, `npm in
 ```bash
 npm run doctor
 npm run test:2
+npm run test:2b
 npm run serve:2
 npm run serve:2:docker
 ```
 
-`doctor` mostra quale PHP viene usato. `test:2` esegue i test dell'esercizio 02 senza database. `serve:2` avvia l'API sulla porta 8000; ferma il server con `Ctrl+C`. `serve:2:docker` avvia prima MariaDB con Docker e poi l'API, configurando automaticamente il driver PHP e la connessione; su Omarchy può chiedere la password `sudo` per avviare Docker, mentre PHP resta avviato come utente normale. La [prova completa dell'esercizio 02](info/API/02-create-student-api/README.md#con-docker) spiega come inviare il POST e verificare la riga. Sostituisci `2` con `1`, `3` o `4` per gli altri esercizi; per l'esempio completo usa `npm run serve:example`. I test incompleti falliscono finché non vengono implementati i metodi richiesti.
+`doctor` mostra quale PHP viene usato. `test:2` esegue i test dell'esercizio 02 senza database. `serve:2` avvia l'API sulla porta 8000; ferma il server con `Ctrl+C`. `serve:2:docker` avvia PHP e MariaDB nei container e termina lasciandoli in esecuzione; per fermarli usa `docker compose down` dalla cartella dell'esercizio 02. La [prova completa dell'esercizio 02](info/API/02-create-student-api/README.md#con-docker) spiega come inviare il POST e verificare la riga. Usa `2b` per la nuova GET, `1`, `3` o `4` per gli altri esercizi; per l'esempio completo usa `npm run serve:example`. I test incompleti falliscono finché non vengono implementati i metodi richiesti.
 
 ## Debug dei test in VS Code
 

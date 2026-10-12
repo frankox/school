@@ -24,12 +24,7 @@ class CreateStudentRequest
         
         self::validate($data);
 
-        return new self(
-            firstName: $data->firstName,
-            lastName: $data->lastName,
-            age: $data->age,
-            studentCode: $data->studentCode,
-        );
+        return $data;
     }
 
     private static function validate(self $instance): void

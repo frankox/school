@@ -1,5 +1,17 @@
 # Valutazione di un'azienda con il reddito medio prospettico
 
+## Con Docker (solo Docker richiesto)
+
+Apri un terminale nella cartella `gestione-progetto/valutazione-azienda` ed esegui:
+
+```bash
+docker compose run --rm test
+```
+
+Docker esegue Node.js, installa TypeScript e lancia i test nel container. Modifica `src/companyEvaluation.ts` sul computer e ripeti il comando: il codice aggiornato viene letto subito. Al primo avvio servono Internet e il download dell'immagine e dei pacchetti. Alcuni test falliscono finché non completi la funzione. `docker compose down -v` elimina soltanto la cache delle dipendenze del container. [Guida Docker comune](../../DOCKER.md).
+
+
+
 ## Situazione aziendale
 
 Un'impresa dispone dei rendiconti di almeno cinque esercizi consecutivi, ma non conosce ancora il risultato dell'anno corrente. Per ogni esercizio sono disponibili l'**utile dell'azienda prima delle imposte** e le **imposte**. Il committente chiede una stima dell'utile netto dell'anno corrente, degli utili netti dei prossimi `n` anni e del valore dell'impresa secondo il metodo semplificato della capitalizzazione del reddito medio prospettico. In questa consegna, «reddito» indica sempre l'utile dell'azienda, non lo stipendio di un dipendente o il reddito personale di un socio.

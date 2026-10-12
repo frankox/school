@@ -1,0 +1,35 @@
+name: school-api-01
+
+services:
+  app:
+    image: php:8.3-cli-bookworm
+    working_dir: /work
+    volumes:
+      - .:/work
+    command: php -S 0.0.0.0:8000 -t public
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1:8000/health.php') === false ? 1 : 0);"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+
+  test:
+    profiles: ["tools"]
+    image: php:8.3-cli-bookworm
+    working_dir: /work
+    volumes:
+      - .:/work
+    command: php tests/run.php
+
+  client:
+    image: curlimages/curl:8.11.1
+    profiles: ["tools"]
+    working_dir: /work
+    volumes:
+      - .:/work:ro
+    entrypoint: ["curl"]
+    depends_on:
+      app:
+        condition: service_healthy

@@ -8,6 +8,7 @@ const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const exercises = {
   1: '01-csv-to-sql-api',
   2: '02-create-student-api',
+  '2b': '02b-get-students-api',
   3: '03-json-batch-transaction',
   4: '04-order-transaction',
   example: '00-example-books-api',
@@ -103,8 +104,8 @@ function run(binary, args, cwd = root, environment = {}) {
   });
 }
 
-function startDockerDatabase(directory) {
-  const args = ['compose', 'up', '-d', '--wait', 'db'];
+function startDockerExercise(directory) {
+  const args = ['compose', 'up', '-d', '--build', '--wait'];
   const first = spawnSync('docker', args, { cwd: directory, encoding: 'utf8', windowsHide: true });
   if (first.status === 0) {
     process.stdout.write(first.stdout);
@@ -114,20 +115,20 @@ function startDockerDatabase(directory) {
 
   const output = `${first.stdout ?? ''}${first.stderr ?? ''}`;
   if (process.platform !== 'win32' && /permission denied.*docker API/i.test(output)) {
-    console.log('Docker richiede sudo su questo sistema. Avvio solo il database con privilegi amministrativi...');
+    console.log('Docker richiede sudo su questo sistema. Avvio i container con privilegi amministrativi...');
     const retry = spawnSync('sudo', ['docker', ...args], { cwd: directory, stdio: 'inherit' });
     if (retry.status === 0) return;
-    throw new Error(`Impossibile avviare MariaDB con sudo. ${retry.error?.message ?? 'Controlla il messaggio di Docker qui sopra.'}`);
+    throw new Error(`Impossibile avviare i container con sudo. ${retry.error?.message ?? 'Controlla il messaggio di Docker qui sopra.'}`);
   }
 
   process.stdout.write(first.stdout ?? '');
   process.stderr.write(first.stderr ?? '');
-  throw new Error(`Impossibile avviare MariaDB con Docker Compose. ${first.error?.message ?? 'Controlla Docker e il suo accesso al daemon.'}`);
+  throw new Error(`Impossibile avviare i container con Docker Compose. ${first.error?.message ?? 'Controlla Docker e il suo accesso al daemon.'}`);
 }
 
 try {
   const [mode, exercise, ...extra] = process.argv.slice(2);
-  const php = findPhp();
+  const php = mode === 'serve-docker' ? null : findPhp();
   if (mode === 'doctor') {
     if (exercise) throw new Error('doctor non accetta opzioni.');
     console.log(`PHP: ${php}`);
@@ -143,26 +144,12 @@ try {
   } else if (mode === 'serve-docker') {
     if (exercise !== '2' || extra.length) throw new Error('serve-docker è disponibile solo per l’esercizio 2.');
     const directory = join(root, 'info', 'API', exercises[2]);
-    startDockerDatabase(directory);
-
-    const driverCheck = ['-r', 'echo extension_loaded("pdo_mysql") ? "yes" : "no";'];
-    const driverOptions = inspect(php, driverCheck).stdout?.trim() === 'yes' ? [] : ['-d', 'extension=pdo_mysql'];
-    if (inspect(php, [...driverOptions, ...driverCheck]).stdout?.trim() !== 'yes') {
-      throw new Error('Il PHP selezionato non riesce a caricare pdo_mysql. Controlla PHP_BIN o installa il modulo.');
-    }
-
-    const port = process.env.PORT || '8000';
-    if (!/^\d+$/.test(port)) throw new Error('PORT deve essere un numero.');
-    run(php, [...driverOptions, '-S', `127.0.0.1:${port}`, '-t', join(directory, 'public')], directory, {
-      DB_DSN: 'mysql:host=127.0.0.1;port=3307;dbname=school_ex02;charset=utf8mb4',
-      DB_USER: 'school_api',
-      DB_PASSWORD: 'school_dev',
-    });
+    startDockerExercise(directory);
   } else if (mode === 'test' || mode === 'serve') {
     if (extra.length || (exercise && exercise.startsWith('-'))) throw new Error('Questo comando non accetta opzioni di debug. Usa F5 in VS Code.');
     const folder = exercises[exercise];
     if (!folder || (mode === 'test' && exercise === 'example')) {
-      throw new Error('Esercizio non valido. Usa 1, 2, 3 o 4; per il server puoi usare anche example.');
+      throw new Error('Esercizio non valido. Usa 1, 2, 2b, 3 o 4; per il server puoi usare anche example.');
     }
     const directory = join(root, 'info', 'API', folder);
     if (mode === 'test') {

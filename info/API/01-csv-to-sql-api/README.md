@@ -1,5 +1,20 @@
 # Esercizio 01 — Da CSV a INSERT SQL
 
+## Con Docker (solo Docker richiesto)
+
+Aprire un terminale in questa cartella. Per i test e la prova HTTP non servono PHP o curl sul computer:
+
+```bash
+docker compose run --rm test
+docker compose up -d --wait
+docker compose run --rm client -i -X POST -H "Content-Type: text/csv" --data-binary "@examples/students.csv" "http://app:8000/api/generate-insert.php?database=school&table=students"
+docker compose down
+```
+
+L'esercizio genera testo SQL e non avvia un database. All'inizio alcuni test possono fallire: indicano il codice da completare. [Guida Docker comune](../../../DOCKER.md).
+
+
+
 ## Obiettivo
 
 Completare un convertitore che riceve dati CSV e produce una singola istruzione `INSERT` per MariaDB/MySQL.

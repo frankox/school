@@ -1,17 +1,45 @@
-name: school-ex02
+name: school-api-02
+
+x-php: &php
+  build:
+    context: ../docker/php
+  working_dir: /work
+  volumes:
+    - .:/work
 
 services:
+  app:
+    <<: *php
+    command: php -S 0.0.0.0:8000 -t public
+    environment:
+      DB_DSN: mysql:host=db;dbname=school_ex02;charset=utf8mb4
+      DB_USER: school_user
+      DB_PASSWORD: school_dev
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1:8000/health.php') === false ? 1 : 0);"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+
+  test:
+    profiles: ["tools"]
+    <<: *php
+    command: php tests/run.php
+
   db:
     image: mariadb:11.8
     environment:
-      MARIADB_RANDOM_ROOT_PASSWORD: "1"
+      MARIADB_ROOT_PASSWORD: school_root_dev
       MARIADB_DATABASE: school_ex02
-      MARIADB_USER: school_api
+      MARIADB_USER: school_user
       MARIADB_PASSWORD: school_dev
-    ports:
-      - "127.0.0.1:3307:3306"
     volumes:
-      - student_db_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
       - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
@@ -25,7 +53,7 @@ services:
     profiles: ["admin"]
     environment:
       PMA_HOST: db
-      PMA_USER: school_api
+      PMA_USER: school_user
       PMA_PASSWORD: school_dev
     ports:
       - "127.0.0.1:8080:80"
@@ -33,5 +61,16 @@ services:
       db:
         condition: service_healthy
 
+  client:
+    image: curlimages/curl:8.11.1
+    profiles: ["tools"]
+    working_dir: /work
+    volumes:
+      - .:/work:ro
+    entrypoint: ["curl"]
+    depends_on:
+      app:
+        condition: service_healthy
+
 volumes:
-  student_db_data:
+  db_data:

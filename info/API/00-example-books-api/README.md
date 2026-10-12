@@ -1,5 +1,29 @@
 # Esempio completo — API dei libri
 
+## Con Docker (solo Docker richiesto)
+
+Aprire un terminale in questa cartella. Lo schema viene caricato nel database al primo avvio.
+
+```bash
+docker compose up -d --build --wait
+docker compose run --rm client -i http://app:8000/api/books.php
+docker compose run --rm client -i -X POST -H "Content-Type: application/json" --data-binary "@examples/book.json" http://app:8000/api/books.php
+docker compose run --rm client -i "http://app:8000/api/books.php?id=1"
+docker compose run --rm client -i -X PUT -H "Content-Type: application/json" --data-binary "@examples/book-updated.json" "http://app:8000/api/books.php?id=1"
+docker compose run --rm client -i -X DELETE "http://app:8000/api/books.php?id=1"
+```
+
+Per interrogare le righe con SQL:
+
+```bash
+docker compose exec db mariadb -u school_user -pschool_dev school_example -e "SELECT * FROM books;"
+docker compose --profile admin up -d --wait
+```
+
+phpMyAdmin è su <http://127.0.0.1:8080/> (utente `school_user`, password `school_dev`). `docker compose down` ferma i container; `docker compose down -v` cancella i libri di prova. [Guida Docker comune](../../../DOCKER.md).
+
+
+
 Questo esempio funziona già: si può copiare come guida per creare un'API su un proprio database XAMPP. Non è la soluzione dell'esercizio 02: qui la risorsa è `book`, lì è `student` e alcune parti vanno costruite dagli studenti.
 
 ## Cosa fa
