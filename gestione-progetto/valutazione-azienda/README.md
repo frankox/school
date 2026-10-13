@@ -1,16 +1,6 @@
 # Valutazione di un'azienda con il reddito medio prospettico
 
-## Con Docker (solo Docker richiesto)
-
-Apri un terminale nella cartella `gestione-progetto/valutazione-azienda` ed esegui:
-
-```bash
-docker compose run --rm test
-```
-
-Docker esegue Node.js, installa TypeScript e lancia i test nel container. Modifica `src/companyEvaluation.ts` sul computer e ripeti il comando: il codice aggiornato viene letto subito. Al primo avvio servono Internet e il download dell'immagine e dei pacchetti. Alcuni test falliscono finché non completi la funzione. `docker compose down -v` elimina soltanto la cache delle dipendenze del container. [Guida Docker comune](../../DOCKER.md).
-
-
+Per preparare l'ambiente ed eseguire i test, segui la [guida ai test di Gestione progetto](../TEST.md): Docker è la prima opzione, seguita dall'alternativa Windows.
 
 ## Situazione aziendale
 
@@ -81,43 +71,3 @@ Se un input non rispetta queste regole, lancia un `RangeError`:
 - `capitalizationRate` deve essere finito e maggiore di zero.
 
 Non arrotondare i calcoli intermedi: i test confrontano i risultati numerici con una piccola tolleranza. Questa è una **stima didattica**: la tendenza lineare può dare previsioni economicamente poco plausibili se proiettata troppo lontano. Il tasso è un'ipotesi fornita dal committente; la funzione non deve ricavarlo dai bilanci.
-
-## Come lavorare
-
-### Preparazione su Windows
-
-Serve Node.js **20 o successivo**. L'installazione di Node.js include anche npm: non occorre installarlo a parte. Apri **PowerShell** e controlla se sono già presenti:
-
-```powershell
-node --version
-npm.cmd --version
-```
-
-Se entrambi i comandi mostrano una versione e quella di Node.js è almeno 20, passa ai comandi dell'esercizio. Altrimenti installa la versione LTS di Node.js con [WinGet](https://learn.microsoft.com/it-it/windows/package-manager/winget/install):
-
-```powershell
-winget install --id OpenJS.NodeJS.LTS --exact --source winget
-```
-
-Accetta le eventuali richieste mostrate da Windows. Se `winget` non è riconosciuto, scarica l'**installer Windows** della versione LTS dal [sito ufficiale di Node.js](https://nodejs.org/en/download) ed eseguilo. Se il PC richiede credenziali di amministratore che non hai, chiedi al docente o al responsabile del laboratorio di completare l'installazione.
-
-Chiudi e riapri PowerShell dopo l'installazione, poi ripeti `node --version` e `npm.cmd --version` per verificare che funzionino.
-
-### Eseguire i test
-
-Apri PowerShell nella cartella `gestione-progetto\valutazione-azienda`, quella che contiene `package.json`, poi esegui:
-
-```powershell
-npm.cmd install
-npm.cmd test
-```
-
-`npm.cmd` è il comando di npm utilizzabile anche quando PowerShell blocca gli script `.ps1`. `npm.cmd install` installa TypeScript e gli strumenti necessari per i test. `npm.cmd test` compila i file `.ts` e poi esegue i test. All'inizio i test falliscono perché la funzione contiene soltanto un segnaposto: è previsto. Quando modifichi il codice, riesegui `npm.cmd test`. Il lavoro è completo quando tutti i test passano.
-
-Procedi nell'ordine suggerito dai test: controlla gli input, calcola i redditi netti di tutti i bilanci, ricava la retta, genera le previsioni, calcola media e valore aziendale. Un test sulla serie irregolare verifica che tu usi tutti i bilanci; quelli sulla serie costante e decrescente aiutano a controllare la formula della tendenza. Se un test fallisce, il suo nome indica quale comportamento manca.
-
-Puoi consultare la [documentazione Microsoft di TENDENZA](https://support.microsoft.com/it-it/excel/functions/trend-function) per confrontare il metodo statistico. La funzione TypeScript va comunque scritta da te: non serve Excel per eseguire l'esercizio.
-
-### Se l'editor segnala errori sugli import `node:`
-
-Se `npm.cmd run build` riesce ma l'editor indica che `node:test` o `node:assert/strict` non esistono, controlla che il file di test appartenga al progetto definito da questo `tsconfig.json` e che la cartella `node_modules/@types/node` sia presente. In VS Code, con il test aperto, usa **TypeScript: Go to Project Configuration**: deve aprire il `tsconfig.json` di questo esercizio. Poi scegli **TypeScript: Select TypeScript Version → Use Workspace Version** e riavvia il server TypeScript dall'elenco comandi. L'editor può usare una versione di TypeScript diversa da quella che esegue `npm.cmd run build`; la [guida di VS Code](https://code.visualstudio.com/docs/typescript/typescript-transpiling#_using-newer-typescript-versions) spiega come selezionarla.

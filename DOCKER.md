@@ -1,63 +1,113 @@
 # Usare gli esercizi con Docker
 
-È sufficiente Docker con il comando `docker compose` (Docker Desktop lo include). Scaricate il repository come ZIP se non avete Git. Alla prima esecuzione Docker scarica le immagini; per TypeScript `npm ci` scarica i pacchetti **dentro** il container. Sul computer non servono PHP, Node.js, npm, MariaDB, XAMPP o curl.
+Serve Docker con il comando `docker compose`. Per ottenere i file del repository si può anche scaricare uno ZIP, senza installare Git. Al primo utilizzo Docker scarica le immagini e, se necessario, le dipendenze **dentro i container**. Sul computer non occorrono i linguaggi di programmazione, i relativi gestori di pacchetti, un database o un client HTTP aggiuntivi.
 
-Aprire un terminale **nella cartella dell'esercizio**, dove si trova `compose.yaml`. I comandi sono uguali in PowerShell e nelle shell Linux/macOS. Se su Linux l'utente non ha accesso a Docker, eseguire gli stessi comandi con `sudo` davanti a `docker`.
+Aprire un terminale **nella cartella dell'esercizio**, dove si trova `compose.yaml`. I comandi seguenti funzionano in PowerShell e nelle shell Linux/macOS. Il `README.md` di ogni esercizio indica quali servizi sono presenti, quali comandi usare e quali risultati aspettarsi. Su Linux, se l'utente non ha accesso al daemon Docker, anteporre `sudo` a `docker`.
 
-| Esercizio | Cartella | Servizi |
+## Che cosa sono immagini e container
+
+Un'**immagine** è il modello con un programma e il suo ambiente; un **container** è un'istanza creata da quell'immagine. È simile alla differenza tra una classe e un oggetto, anche se un container è un processo isolato, non un oggetto del programma. Fermare un container non elimina l'immagine.
+
+| Elemento | A che cosa serve | Esempio in questo repository |
 | --- | --- | --- |
-| Fondamenti SQL | `info/sql/fondamenti-sql` | MariaDB, phpMyAdmin |
-| API libri | `info/API/00-example-books-api` | PHP, MariaDB, client HTTP, phpMyAdmin |
-| API CSV | `info/API/01-csv-to-sql-api` | PHP, client HTTP |
-| API 02 | `info/API/02-create-student-api` | PHP, MariaDB, client HTTP, phpMyAdmin |
-| API 02b | `info/API/02b-get-students-api` | PHP, MariaDB, client HTTP, phpMyAdmin |
-| API 03 | `info/API/03-json-batch-transaction` | PHP, MariaDB, client HTTP, phpMyAdmin |
-| API 04 | `info/API/04-order-transaction` | PHP, MariaDB, client HTTP, phpMyAdmin |
-| Valutazione azienda | `gestione-progetto/valutazione-azienda` | Node.js, TypeScript, test |
+| Immagine | Fornisce runtime e strumenti | `node:20-bookworm-slim` per i test TypeScript; `mariadb:11.8` per il database. |
+| Dockerfile | Costruisce un'immagine personalizzata | [Quello delle API PHP](info/API/docker/php/Dockerfile) aggiunge il driver `pdo_mysql` a PHP. |
+| Container | Esegue un servizio o un comando | `app` serve un'API; `test` esegue una suite e termina. |
+| Volume | Conserva dati oltre la vita del container | `db_data` conserva le righe MariaDB anche dopo `docker compose down`. |
+| Montaggio di cartella | Rende visibili nel container i file del computer | `.:/work` fa leggere subito al container le modifiche al codice. |
+| Docker Compose | Descrive e collega i servizi in `compose.yaml` | Avvia PHP, MariaDB e gli strumenti necessari con i comandi qui sotto. |
 
-## Test e avvio
+I container comunicano sulla rete creata da Compose usando i **nomi dei servizi**. Negli esercizi, montaggi e volumi rendono disponibili il codice e i dati persistenti. Su Linux i container usano il kernel dell'host; su Windows Docker Desktop esegue i container Linux in un ambiente Linux gestito da WSL 2 o da una VM.
 
-Nelle cartelle delle API con esercizi da completare (01, 02, 02b, 03, 04):
+### Due esempi del repository
+
+Nell'[API degli studenti](info/API/02-create-student-api/compose.yaml), una richiesta percorre questa strada:
+
+```text
+client HTTP → app (PHP) → db (MariaDB) → volume db_data
+```
+
+`app` usa l'immagine PHP costruita con il Dockerfile; `db` usa un'immagine MariaDB già pronta. Il nome `db` nella connessione PHP indica il servizio sulla rete Compose, non il computer dello studente. La porta `127.0.0.1:8000:8000` rende invece l'API raggiungibile dal browser del computer sulla porta 8000. `admin` offre un'interfaccia web opzionale per il database. Il servizio `test` è separato: può controllare il codice senza lasciare acceso il server.
+
+Nel progetto di [Valutazione azienda](gestione-progetto/valutazione-azienda/compose.yaml) c'è solo `test`: l'immagine Node.js esegue installazione delle dipendenze, compilazione TypeScript e test. Il codice viene montato dalla cartella dell'esercizio; `node_modules` e i file compilati restano in volumi. Per questo progetto non servono un'API o un database.
+
+Quando un servizio deve aspettare il database, `depends_on` da solo stabilisce l'ordine di avvio. Gli esercizi API con MariaDB aggiungono un controllo di salute e fanno attendere `app` finché `db` è pronto.
+
+## Eseguire i test
+
+Aprire il `compose.yaml` dell'esercizio. Se sotto `services:` compare una voce chiamata `test:`, eseguire dalla stessa cartella:
 
 ```bash
 docker compose run --build --rm test
+```
+
+Se appare `permission denied while trying to connect to the docker API` su Linux, la sessione non può accedere al socket Docker. Ripetere il comando con i privilegi necessari:
+
+```bash
+sudo docker compose run --build --rm test
+```
+
+La password richiesta è quella dell'account sul computer. Usare `sudo` anche davanti agli altri comandi `docker compose` dello stesso esercizio.
+
+Il nome `test` nel comando è quello del servizio nel `compose.yaml`; il comando funziona anche quando il servizio è nel profilo `tools`. Crea un container temporaneo, esegue la suite e ne mostra l'esito. Dopo una modifica al codice, ripetere lo stesso comando. Alcuni esercizi partono con test falliti perché contengono parti da completare. Se l'esercizio consiste solo in una funzione verificata dai test, questo comando è tutto ciò che serve: non occorre avviare un server. Se il servizio `test` manca, seguire la verifica indicata nel README dell'esercizio.
+
+## Avviare un'applicazione
+
+Se il progetto include servizi da lasciare in esecuzione:
+
+```bash
 docker compose up -d --build --wait
-docker compose run --rm client -i http://app:8000/health.php
 ```
 
-Il primo comando esegue i test e mostra anche gli eventuali fallimenti previsti dalla consegna. L'esempio dei libri (00) è già completo e non ha una suite di test: per quello partire dal secondo comando. Il secondo avvia PHP e, dove serve, MariaDB. Il terzo fa una richiesta HTTP dal client nel container. Per altre richieste, usare gli esempi nel README dell'esercizio. L'API è accessibile anche dal browser su <http://127.0.0.1:8000/>. Se un altro esercizio sta già usando la porta 8000, fermarlo prima con `docker compose down` dalla sua cartella. Lo stesso vale per phpMyAdmin sulla porta 8080.
+`up` avvia servizi che restano in esecuzione; `run` crea invece un container per un compito singolo, mentre `exec` esegue un comando in un servizio già avviato. `--wait` attende i controlli di salute definiti nel Compose. Indirizzo, porta e percorso dell'applicazione sono nel `README.md` dell'esercizio. Se la porta è già occupata da un altro esercizio, fermare prima quest'ultimo dalla sua cartella con `docker compose down`.
 
-Per Fondamenti SQL:
+Per controllare i servizi attivi e leggere i messaggi di un'applicazione, quando il servizio si chiama `app`:
 
 ```bash
-docker compose up -d --wait
-docker compose exec db mariadb -u school_user -pschool_dev school_lab
+docker compose ps
+docker compose logs -f app
 ```
 
-Nella shell MariaDB si possono scrivere query SQL terminandole con `;`; `exit` la chiude. Per vedere le tabelle nel browser aprire <http://127.0.0.1:8080/>. Credenziali: utente `school_user`, password `school_dev`.
+`Ctrl+C` interrompe la visualizzazione dei log senza fermare il servizio.
 
-Per un'API con database, dalla **sua** cartella:
+Se il progetto include il servizio `client`, inviare richieste HTTP dal container usando gli esempi esatti nel suo README. La forma generale è:
 
 ```bash
-docker compose exec db mariadb -u school_user -pschool_dev NOME_DATABASE
+docker compose run --rm client -i "http://app:8000/PERCORSO"
+```
+
+`PERCORSO` è un segnaposto: sostituirlo con quello indicato nella consegna. Per POST e PUT aggiungere metodo, intestazioni e file di input come mostrato nel README. Il servizio `client` evita di installare curl sul computer.
+
+## Consultare un database
+
+Se il progetto include `db`, il README dell'esercizio riporta nome del database e credenziali. Per aprire il client SQL **dentro** il container:
+
+```bash
+docker compose exec db mariadb -u UTENTE -p NOME_DATABASE
+```
+
+Sostituire `UTENTE` e `NOME_DATABASE` con i valori documentati; `-p` chiede la password. Terminare ogni query SQL con `;` e digitare `exit` per uscire. Se il progetto include il servizio opzionale `admin`, avviare l'interfaccia nel browser con:
+
+```bash
 docker compose --profile admin up -d --wait
 ```
 
-Sostituire `NOME_DATABASE` con il nome indicato nel README: `school_example`, `school_ex02`, `school_ex02_get`, `school_ex03` o `shop_ex04`. Il secondo comando rende disponibile phpMyAdmin su <http://127.0.0.1:8080/> con le stesse credenziali. La porta del database resta interna alla rete Docker.
+L'indirizzo e le credenziali dell'interfaccia sono nel README dell'esercizio. Il database può restare accessibile soltanto dalla rete Docker: non serve pubblicarne la porta sul computer.
 
-Per Valutazione azienda:
+## Fermare e ripartire
 
-```bash
-docker compose run --rm test
-```
-
-## Dati e arresto
-
-`docker compose down` ferma i container dell'esercizio. I database restano nel volume e lo schema viene importato automaticamente **solo al primo avvio**. Per ricominciare con i dati iniziali, dalla cartella dell'esercizio usare:
+Dalla cartella dell'esercizio:
 
 ```bash
-docker compose down -v
-docker compose up -d --build --wait
+docker compose down
 ```
 
-`down -v` cancella i dati del database di quell'esercizio. Per Valutazione azienda elimina invece la cache delle dipendenze Node.js; il codice rimane nella cartella del progetto. I progetti Compose hanno nomi distinti, quindi i volumi dei diversi esercizi restano separati.
+Questo ferma i container e conserva i volumi. Quando sono presenti dati persistenti, lo schema iniziale viene di norma caricato solo al primo avvio. Per eliminare **anche i dati e le cache nei volumi**:
+
+```bash
+docker compose --profile tools --profile admin down -v
+```
+
+Il comando elimina i volumi di quel progetto Compose; leggere nel README dell'esercizio quali dati andranno persi. I file del codice montati dalla cartella del progetto restano sul computer. Dopo il reset, ripetere il comando di test o di avvio appropriato per l'esercizio.
+
+Questa guida riprende e adatta i concetti della [spiegazione Docker condivisa](https://chatgpt.com/share/6ace427e-f994-83ed-a07b-393cc67bd4b6) agli esercizi del repository.

@@ -1,6 +1,6 @@
 # Gestione progetto
 
-Gli esercizi si possono eseguire con il solo Docker; vedere la [guida comune](../DOCKER.md) e il README di ciascun progetto.
+Per eseguire i test, seguire la [guida di Gestione progetto](TEST.md): rimanda ai comandi Docker comuni e spiega l'alternativa Windows senza Docker.
 
 Questa sezione raccoglie esercizi di economia, economia aziendale e project management. La programmazione è uno strumento per applicare i concetti della materia.
 
