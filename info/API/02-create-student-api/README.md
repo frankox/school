@@ -21,7 +21,7 @@ Realizzare `POST /api/students.php`. Il client invia questo JSON:
 }
 ```
 
-L'endpoint deve trasformare e controllare i dati in `CreateStudentRequest::fromJson()`, poi `StudentRepository::create()` deve fare una sola `INSERT` con PDO. Il codice dell'endpoint e della connessione è già predisposto. Non serve una transazione esplicita per questa unica query; la userete nell'esercizio 03 per più `INSERT` che devono riuscire insieme.
+L'endpoint deve trasformare e controllare i dati in `CreateStudentRequest::fromJson()`, poi `StudentRepository::create()` deve fare una sola `INSERT` con PDO. Il codice dell'endpoint e della connessione è già predisposto; i due metodi da completare contengono un `TODO` e lanciano `LogicException`. Non serve una transazione esplicita per questa unica query; la userete nell'esercizio 03 per più `INSERT` che devono riuscire insieme.
 
 Regole da rispettare:
 
@@ -60,7 +60,7 @@ Test-Path .\tests\run.php
 & "C:\xampp\php\php.exe" .\tests\run.php
 ```
 
-`Test-Path` risponde `True` se il terminale è nella cartella corretta. `--version` mostra la versione di PHP: serve almeno PHP 8.0. L'ultimo comando esegue i test. All'inizio alcuni fallimenti sono previsti: indicano i comportamenti ancora da implementare. I test usano un **doppio di PDO**: una classe che registra le chiamate senza toccare il database. Questo permette di correggere interpretazione del JSON e query prima di configurare XAMPP.
+`Test-Path` risponde `True` se il terminale è nella cartella corretta. `--version` mostra la versione di PHP: serve almeno PHP 8.0. L'ultimo comando esegue i test. All'inizio falliscono tutti e dieci: sette richiedono la lettura e la validazione del JSON, tre la `INSERT` con PDO. I test usano un **doppio di PDO**: una classe che registra le chiamate senza toccare il database. Questo permette di correggere interpretazione del JSON e query prima di configurare XAMPP.
 
 In PowerShell, `&` avvia il programma indicato tra virgolette; `.\` indica un percorso a partire dalla cartella attuale. Se avete già aggiunto PHP al `Path` di Windows, potete usare `php .\tests\run.php` al posto del percorso completo.
 
@@ -157,7 +157,7 @@ docker compose run --rm client -i -X POST -H "Content-Type: application/json" --
 docker compose exec db mariadb -u school_user -pschool_dev school_ex02 -e "SELECT id, first_name, last_name, age, student_code FROM students;"
 ```
 
-Alcuni test falliscono finché l'esercizio non è completo. La risposta `201 Created` indica che la riga è stata inserita; la `SELECT` la mostra. Per phpMyAdmin eseguire `docker compose --profile admin up -d --wait` e aprire <http://127.0.0.1:8080/> con utente `school_user` e password `school_dev`. `docker compose down` ferma i container e conserva i dati; `docker compose down -v` cancella il database di questo esercizio. [Guida Docker comune](../../../DOCKER.md).
+All'inizio falliscono tutti e dieci i test; diventano verdi completando i due metodi indicati sopra. La risposta `201 Created` indica che la riga è stata inserita; la `SELECT` la mostra. Per phpMyAdmin eseguire `docker compose --profile admin up -d --wait` e aprire <http://127.0.0.1:8080/> con utente `school_user` e password `school_dev`. `docker compose down` ferma i container e conserva i dati; `docker compose down -v` cancella il database di questo esercizio. [Guida Docker comune](../../../DOCKER.md).
 
 ## Errori frequenti
 
