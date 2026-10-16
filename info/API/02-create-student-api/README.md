@@ -30,7 +30,6 @@ Regole da rispettare:
 3. `studentCode` resta una stringa: `"00123"` non deve diventare il numero `123`.
 4. I valori ricevuti devono essere passati a una **query preparata PDO**, usando parametri come `:first_name`; non vanno concatenati nel testo SQL.
 
-## Il percorso dei dati, file per file
 
 ```text
 examples/student.json
