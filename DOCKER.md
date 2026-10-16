@@ -33,6 +33,19 @@ Nel progetto di [Valutazione azienda](gestione-progetto/valutazione-azienda/comp
 
 Quando un servizio deve aspettare il database, `depends_on` da solo stabilisce l'ordine di avvio. Gli esercizi API con MariaDB aggiungono un controllo di salute e fanno attendere `app` finché `db` è pronto.
 
+## Usare VS Code nel container
+
+Eseguire i test con Docker non basta per l'analisi statica: VS Code aperto sul computer non vede i pacchetti conservati in un volume Docker. Il [Dev Container di `school`](.devcontainer/devcontainer.json) apre **l'intero repository**, compresi i README e le guide comuni, e rende disponibili all'editor le dipendenze TypeScript di Valutazione azienda. Per il PHP installa Intelephense nel container, senza richiedere PHP sul computer.
+
+1. Avvia Docker e verifica che il tuo account possa usarlo. In VS Code installa l'estensione [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers). Non occorre installare Node.js o npm sul computer.
+2. In VS Code scegli **File → Apri cartella** e apri **`school`**, la radice del repository che contiene `.devcontainer/devcontainer.json`. Nel pannello Explorer vedrai anche `README.md`, `DOCKER.md`, `info/` e `gestione-progetto/`.
+3. Premi **Ctrl+Shift+P** (oppure **F1**), cerca **Dev Containers: Reopen in Container** e premi Invio. Attendi che VS Code prepari il container: al primo avvio scarica l'immagine, le dipendenze npm e i componenti remoti necessari.
+4. Controlla che in basso a sinistra VS Code indichi il Dev Container. Apri `gestione-progetto/valutazione-azienda/tests/companyEvaluation.test.ts` e scegli **TypeScript: Select TypeScript Version → Use Workspace Version** dalla tavolozza dei comandi. Ora completamento e analisi statica usano i tipi disponibili nel container.
+
+I file che modifichi restano sul computer e sono letti subito dal container. Per provare Valutazione azienda nel terminale **interno al Dev Container**, entra in `gestione-progetto/valutazione-azienda` ed esegui `npm test`. Per gli altri esercizi segui i rispettivi README ed esegui i comandi `docker compose` da un terminale **del computer**, fuori dal Dev Container. Per tornare all'editor locale, scegli **Dev Containers: Reopen Folder Locally**. Gli avvisi sulle librerie possono ricomparire perché il volume `node_modules` non è visibile all'editor locale.
+
+VS Code deve poter accedere a Docker con i permessi dell'account dello studente: anteporre `sudo` ai comandi del terminale non abilita l'estensione Dev Containers. Sui computer del laboratorio questo accesso va predisposto per gli account degli studenti. Per dettagli su TypeScript e sugli esercizi PHP, vedi la [guida all'editor](VS-CODE.md).
+
 ## Eseguire i test
 
 Aprire il `compose.yaml` dell'esercizio. Se sotto `services:` compare una voce chiamata `test:`, eseguire dalla stessa cartella:

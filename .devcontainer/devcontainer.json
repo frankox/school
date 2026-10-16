@@ -1,0 +1,21 @@
+{
+  "name": "school (editor)",
+  "dockerComposeFile": [
+    "../gestione-progetto/valutazione-azienda/compose.yaml",
+    "compose.yaml"
+  ],
+  "service": "test",
+  "runServices": ["test"],
+  "workspaceFolder": "/school",
+  "overrideCommand": true,
+  "postCreateCommand": "cd /school/gestione-progetto/valutazione-azienda && npm ci --prefer-offline --no-audit --no-fund",
+  "customizations": {
+    "vscode": {
+      "extensions": ["bmewburn.vscode-intelephense-client"],
+      "settings": {
+        "js/ts.tsdk.path": "/school/gestione-progetto/valutazione-azienda/node_modules/typescript/lib",
+        "php.validate.enable": false
+      }
+    }
+  }
+}

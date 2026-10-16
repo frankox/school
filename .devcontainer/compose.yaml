@@ -1,0 +1,8 @@
+# Con più file Compose, i percorsi relativi partono dalla cartella del primo file:
+# gestione-progetto/valutazione-azienda. Da lì ../.. è la radice school.
+services:
+  test:
+    volumes:
+      - ../..:/school
+      - node_modules:/school/gestione-progetto/valutazione-azienda/node_modules
+      - dist:/school/gestione-progetto/valutazione-azienda/dist

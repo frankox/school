@@ -4,6 +4,8 @@
 
 Segui direttamente la [guida Docker, sezione «Eseguire i test»](../DOCKER.md#eseguire-i-test). Apri il terminale nella cartella dell'esercizio che contiene `compose.yaml`. La guida spiega il comando comune a Gestione progetto e agli esercizi di Informatica; qui non viene duplicato.
 
+Per completamento e analisi statica di TypeScript in VS Code, segui anche la [guida Docker, sezione «Usare VS Code nel container»](../DOCKER.md#usare-vs-code-nel-container).
+
 ## Alternativa su Windows senza Docker
 
 Questi passaggi servono se vuoi eseguire localmente i test degli esercizi TypeScript di Gestione progetto. In questo caso devi avere **Node.js 20 o successivo**; npm viene installato insieme a Node.js.

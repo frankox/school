@@ -24,6 +24,8 @@ Per iniziare, scegli [Informatica](info/README.md) o [Gestione progetto](gestion
 
 Ogni esercizio ha un `compose.yaml` nella propria cartella. Con Docker e `docker compose` puoi eseguire test, API e database senza installare PHP, Node.js, npm, MariaDB o curl sul computer. Apri un terminale nella cartella dell'esercizio e segui [la guida Docker](DOCKER.md) o il suo README. Il codice resta nei file del progetto e viene letto dai container; la prima esecuzione richiede Internet per scaricare immagini e dipendenze.
 
+Per avere anche il completamento e l'analisi statica di VS Code senza installare le dipendenze sul computer, segui la [guida Docker, sezione «Usare VS Code nel container»](DOCKER.md#usare-vs-code-nel-container). Puoi aprire **l'intera cartella `school`** nel container di sviluppo e consultare tutti gli esercizi e i README; il solo avvio dei test Docker non rende visibili all'editor locale le librerie conservate nei volumi.
+
 ## Comandi rapidi per le API
 
 Apri un terminale nella cartella `school`. Con Node.js e PHP installati, `npm install` prepara il progetto; qui non ci sono pacchetti npm esterni da scaricare. I comandi seguenti sono scorciatoie per avviare PHP:
@@ -38,7 +40,9 @@ npm run serve:2:docker
 
 `doctor` mostra quale PHP viene usato. `test:2` esegue i test dell'esercizio 02 senza database. `serve:2` avvia l'API sulla porta 8000; ferma il server con `Ctrl+C`. `serve:2:docker` avvia PHP e MariaDB nei container e termina lasciandoli in esecuzione; per fermarli usa `docker compose down` dalla cartella dell'esercizio 02. La [prova completa dell'esercizio 02](info/API/02-create-student-api/README.md#con-docker) spiega come inviare il POST e verificare la riga. Usa `2b` per la nuova GET, `1`, `3` o `4` per gli altri esercizi; per l'esempio completo usa `npm run serve:example`. I test incompleti falliscono finché non vengono implementati i metodi richiesti.
 
-## Debug dei test in VS Code
+## Debug locale dei test PHP in VS Code
+
+Questa configurazione usa Node.js e PHP sul computer, come descritto nei [comandi rapidi](#comandi-rapidi-per-le-api). Per lavorare con solo Docker e avere l'analisi statica dell'esercizio TypeScript, segui la [guida all'editor](VS-CODE.md).
 
 1. Apri **l'intera cartella `school`** in VS Code e installa l'estensione consigliata **PHP Debug** (`xdebug.php-debug`).
 2. Apri il file PHP in cui vuoi fermarti e clicca a sinistra del numero di riga: appare un punto rosso, il *breakpoint*.
