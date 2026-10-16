@@ -26,6 +26,8 @@ Ogni esercizio ha un `compose.yaml` nella propria cartella. Con Docker e `docker
 
 Per avere anche il completamento e l'analisi statica di VS Code senza installare le dipendenze sul computer, segui la [guida Docker, sezione «Usare VS Code nel container»](DOCKER.md#usare-vs-code-nel-container). Puoi aprire **l'intera cartella `school`** nel container di sviluppo e consultare tutti gli esercizi e i README; il solo avvio dei test Docker non rende visibili all'editor locale le librerie conservate nei volumi.
 
+**Se lavori in Dev Containers**, usa le istruzioni nel `README.md` del singolo esercizio e scegli il terminale indicato: per Valutazione azienda puoi entrare nella cartella dell'esercizio ed eseguire `npm test` nel terminale integrato del container; per gli esercizi PHP e SQL esegui i comandi `docker compose` del loro README in un terminale **del computer**, fuori dal Dev Container. Il container dell'editor non include il comando `docker`.
+
 ## Comandi rapidi per le API
 
 Apri un terminale nella cartella `school`. Con Node.js e PHP installati, `npm install` prepara il progetto; qui non ci sono pacchetti npm esterni da scaricare. I comandi seguenti sono scorciatoie per avviare PHP:
