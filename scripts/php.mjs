@@ -160,7 +160,7 @@ try {
       run(php, ['-S', `localhost:${port}`, '-t', join(directory, 'public')], directory);
     }
   } else {
-    throw new Error('Usa npm run doctor, npm run test:2, npm run serve:2 o npm run serve:2:docker. Per il debug dei test usa F5 in VS Code.');
+    throw new Error('Usa npm run doctor, npm run test:info:2, npm run serve:info:2 o npm run serve:info:2:docker. Per il debug dei test usa F5 in VS Code.');
   }
 } catch (error) {
   console.error(error.message);

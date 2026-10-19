@@ -34,13 +34,13 @@ Apri un terminale nella cartella `school`. Con Node.js e PHP installati, `npm in
 
 ```bash
 npm run doctor
-npm run test:2
-npm run test:2b
-npm run serve:2
-npm run serve:2:docker
+npm run test:info:2
+npm run test:info:2b
+npm run serve:info:2
+npm run serve:info:2:docker
 ```
 
-`doctor` mostra quale PHP viene usato. `test:2` esegue i test dell'esercizio 02 senza database. `serve:2` avvia l'API sulla porta 8000; ferma il server con `Ctrl+C`. `serve:2:docker` avvia PHP e MariaDB nei container e termina lasciandoli in esecuzione; per fermarli usa `docker compose down` dalla cartella dell'esercizio 02. La [prova completa dell'esercizio 02](info/API/02-create-student-api/README.md#con-docker) spiega come inviare il POST e verificare la riga. Usa `2b` per la nuova GET, `1`, `3` o `4` per gli altri esercizi; per l'esempio completo usa `npm run serve:example`. I test incompleti falliscono finché non vengono implementati i metodi richiesti.
+`doctor` mostra quale PHP viene usato. `test:info:2` esegue i test dell'esercizio 02 senza database. `serve:info:2` avvia l'API sulla porta 8000; ferma il server con `Ctrl+C`. `serve:info:2:docker` avvia PHP e MariaDB nei container e termina lasciandoli in esecuzione; per fermarli usa `docker compose down` dalla cartella dell'esercizio 02. La [prova completa dell'esercizio 02](info/API/02-create-student-api/README.md#con-docker) spiega come inviare il POST e verificare la riga. Usa `2b` per la nuova GET, `1`, `3` o `4` per gli altri esercizi; per l'esempio completo usa `npm run serve:info:example`. I test incompleti falliscono finché non vengono implementati i metodi richiesti.
 
 ## Debug locale dei test PHP in VS Code
 

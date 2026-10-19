@@ -2,11 +2,35 @@
 
 declare(strict_types=1);
 
-function check(bool $condition, string $message): void
+function assertSameValue(mixed $expected, mixed $actual, string $description): void
 {
-    if (!$condition) {
-        throw new RuntimeException($message);
+    if ($expected !== $actual) {
+        throw new RuntimeException(
+            $description . "\nAtteso: " . var_export($expected, true)
+            . "\nRicevuto: " . var_export($actual, true)
+        );
     }
+}
+
+function assertStatus(int $expected, int $actual, array $body): void
+{
+    if ($expected !== $actual) {
+        throw new RuntimeException(
+            "Stato HTTP\nAtteso: {$expected}\nRicevuto: {$actual}"
+            . "\nRisposta JSON: " . json_encode($body, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR)
+        );
+    }
+}
+
+function studentsFrom(array $body): array
+{
+    if (!isset($body['students']) || !is_array($body['students'])) {
+        throw new RuntimeException(
+            "Campo students (lista)\nAtteso: una lista di studenti"
+            . "\nRicevuto: " . var_export($body, true)
+        );
+    }
+    return $body['students'];
 }
 
 function request(string $path, string $method = 'GET'): array
@@ -17,11 +41,18 @@ function request(string $path, string $method = 'GET'): array
         'timeout' => 2,
     ]]);
     $body = file_get_contents('http://127.0.0.1:' . $GLOBALS['port'] . $path, false, $context);
-    check($body !== false, 'La richiesta HTTP non ha ricevuto una risposta.');
+    if ($body === false) {
+        throw new RuntimeException('La richiesta HTTP non ha ricevuto una risposta.');
+    }
     $headers = $http_response_header ?? [];
     preg_match('/\s(\d{3})\s/', $headers[0] ?? '', $matches);
     $data = json_decode($body, true);
-    check(json_last_error() === JSON_ERROR_NONE && is_array($data), 'La risposta deve essere JSON valido.');
+    if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
+        throw new RuntimeException(
+            "Risposta JSON\nAtteso: un oggetto JSON valido"
+            . "\nRicevuto: " . var_export($body, true)
+        );
+    }
     return [(int) ($matches[1] ?? 0), $data, $headers];
 }
 
@@ -34,10 +65,11 @@ $address = stream_socket_get_name($socket, false);
 fclose($socket);
 $GLOBALS['port'] = (int) substr($address, strrpos($address, ':') + 1);
 
-$env = array_merge($_ENV, [
+$env = array_merge(getenv(), [
     'DB_FACTORY_FILE' => __DIR__ . '/fake-database.php',
 ]);
 $log = tempnam(sys_get_temp_dir(), 'students-api-');
+error_clear_last();
 $process = proc_open(
     [PHP_BINARY, '-S', '127.0.0.1:' . $GLOBALS['port'], '-t', $root . '/public'],
     [0 => ['pipe', 'r'], 1 => ['file', $log, 'a'], 2 => ['file', $log, 'a']],
@@ -45,7 +77,11 @@ $process = proc_open(
     $root,
     $env
 );
-check(is_resource($process), 'Impossibile avviare il server PHP.');
+if (!is_resource($process)) {
+    $error = error_get_last()['message'] ?? 'Verificare che PHP possa creare processi.';
+    unlink($log);
+    throw new RuntimeException('Impossibile avviare il server PHP. ' . $error);
+}
 fclose($pipes[0]);
 
 try {
@@ -58,39 +94,51 @@ try {
             break;
         }
     }
-    check($ready, 'Il server PHP non si è avviato.');
+    if (!$ready) {
+        throw new RuntimeException('Il server PHP non si è avviato. ' . file_get_contents($log));
+    }
 
     $tests = [
-        'GET elenca studenti senza student_code' => static function (): void {
+        'GET lists students without student_code' => static function (): void {
             [$status, $body] = request('/api/students.php');
-            check($status === 200, 'Atteso HTTP 200; ricevuto ' . $status);
-            check(isset($body['students']) && count($body['students']) === 6, 'Attesi sei studenti.');
-            check($body['students'][0] === [
+            assertStatus(200, $status, $body);
+            $students = studentsFrom($body);
+            assertSameValue(6, count($students), 'Numero di studenti');
+            assertSameValue([
                 'id' => 1, 'first_name' => 'Giulia', 'last_name' => 'Bianchi', 'age' => 16,
-            ], 'La risposta deve contenere solo id, first_name, last_name e age.');
-            check(!str_contains(json_encode($body), 'student_code'), 'student_code è un dato riservato.');
+            ], $students[0], 'Primo studente (solo colonne pubbliche)');
+            if (str_contains(json_encode($body), 'student_code')) {
+                throw new RuntimeException(
+                    "Campo riservato student_code\nAtteso: assente dalla risposta"
+                    . "\nRicevuto: " . var_export($body, true)
+                );
+            }
         },
-        'GET con min_age filtra tramite WHERE' => static function (): void {
+        'GET with min_age filters through WHERE' => static function (): void {
             [$status, $body] = request('/api/students.php?min_age=18');
-            check($status === 200, 'Atteso HTTP 200; ricevuto ' . $status);
-            check(array_column($body['students'] ?? [], 'id') === [3, 4, 5, 6], 'Il filtro deve includere solo età >= 18.');
+            assertStatus(200, $status, $body);
+            assertSameValue([3, 4, 5, 6], array_column(studentsFrom($body), 'id'), 'ID con min_age=18');
         },
-        'GET può restituire una lista vuota' => static function (): void {
+        'GET can return an empty list' => static function (): void {
             [$status, $body] = request('/api/students.php?min_age=100');
-            check($status === 200 && $body === ['students' => []], 'Attesa una lista vuota con HTTP 200.');
+            assertStatus(200, $status, $body);
+            assertSameValue(['students' => []], $body, 'Risposta con min_age=100');
         },
-        'min_age non valido restituisce 422' => static function (): void {
+        'Invalid min_age returns 422' => static function (): void {
             [$status, $body] = request('/api/students.php?min_age=abc');
-            check($status === 422 && isset($body['error']), 'Atteso HTTP 422 e un messaggio di errore.');
+            assertStatus(422, $status, $body);
+            assertSameValue(true, isset($body['error']), 'Presenza del messaggio di errore');
         },
-        'min_age fuori intervallo restituisce 422' => static function (): void {
+        'Out-of-range min_age returns 422' => static function (): void {
             [$status, $body] = request('/api/students.php?min_age=13');
-            check($status === 422 && isset($body['error']), 'Atteso HTTP 422 per età minore di 14.');
+            assertStatus(422, $status, $body);
+            assertSameValue(true, isset($body['error']), 'Presenza del messaggio di errore');
         },
-        'POST restituisce 405 e Allow GET' => static function (): void {
+        'POST returns 405 and Allow GET' => static function (): void {
             [$status, $body, $headers] = request('/api/students.php', 'POST');
-            check($status === 405 && isset($body['error']), 'Atteso HTTP 405.');
-            check(in_array('Allow: GET', $headers, true), 'Manca l’header Allow: GET.');
+            assertStatus(405, $status, $body);
+            assertSameValue(true, isset($body['error']), 'Presenza del messaggio di errore');
+            assertSameValue(true, in_array('Allow: GET', $headers, true), 'Header Allow: GET');
         },
     ];
 
@@ -101,7 +149,8 @@ try {
             $passed++;
             echo "[PASS] {$name}\n";
         } catch (Throwable $exception) {
-            echo "[FAIL] {$name}: {$exception->getMessage()}\n";
+            echo "[FAIL] {$name}\n";
+            echo '       ' . str_replace("\n", "\n       ", $exception->getMessage()) . "\n";
         }
     }
     echo "\nRisultato: {$passed}/" . count($tests) . " test superati.\n";

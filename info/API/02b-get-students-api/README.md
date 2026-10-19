@@ -13,7 +13,7 @@ docker compose exec db mariadb -u school_user -pschool_dev school_ex02_get -e "S
 docker compose --profile admin up -d --wait
 ```
 
-I test usano un database simulato; alcuni falliscono finché la GET non è completata. phpMyAdmin è su <http://127.0.0.1:8080/> (utente `school_user`, password `school_dev`). `docker compose down` ferma i container; `docker compose down -v` elimina i dati e permette di ricaricare lo schema al prossimo avvio. [Guida Docker comune](../../../DOCKER.md).
+I test usano un database simulato; alcuni falliscono finché la GET non è completata. I fallimenti delle asserzioni mostrano il valore atteso e quello ricevuto, incluso lo stato HTTP e la risposta JSON quando lo stato è errato. phpMyAdmin è su <http://127.0.0.1:8080/> (utente `school_user`, password `school_dev`). `docker compose down` ferma i container; `docker compose down -v` elimina i dati e permette di ricaricare lo schema al prossimo avvio. [Guida Docker comune](../../../DOCKER.md).
 
 
 
@@ -61,6 +61,8 @@ php tests/run.php
 ```
 
 Su Windows con XAMPP usare `& "C:\xampp\php\php.exe" .\tests\run.php` in PowerShell. I test avviano un server PHP locale, chiamano davvero l'endpoint HTTP e usano un database simulato con gli stessi sei studenti. Controllano lista, filtro, lista vuota, dati nascosti e stati di errore. All'inizio i test GET falliscono con `501`: è il lavoro ancora da svolgere. Il test del metodo non consentito è già verde. Serve il permesso di aprire una porta locale sul computer.
+
+Se compare `Impossibile avviare il server PHP`, il processo PHP dei test non è riuscito a creare il server figlio. Il messaggio successivo indica l'errore di sistema; controllate che l'esecuzione di processi non sia bloccata e che la cartella temporanea sia scrivibile. Se compare `Il server PHP non si è avviato`, viene mostrato anche il log del server. Un altro server sulla porta `8000` non interferisce con i test: scelgono una porta libera automaticamente.
 
 `tests/fake-database.php` è solo per i test: `DB_FACTORY_FILE` sostituisce la connessione a MariaDB mentre il server dei test è in esecuzione. Nelle prove normali non impostate questa variabile.
 
