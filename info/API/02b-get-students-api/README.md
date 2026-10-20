@@ -13,11 +13,11 @@ docker compose exec db mariadb -u school_user -pschool_dev school_ex02_get -e "S
 docker compose --profile admin up -d --wait
 ```
 
-I test usano un database simulato; alcuni falliscono finché la GET non è completata. I fallimenti delle asserzioni mostrano il valore atteso e quello ricevuto, incluso lo stato HTTP e la risposta JSON quando lo stato è errato. phpMyAdmin è su <http://127.0.0.1:8080/> (utente `school_user`, password `school_dev`). `docker compose down` ferma i container; `docker compose down -v` elimina i dati e permette di ricaricare lo schema al prossimo avvio. [Guida Docker comune](../../../DOCKER.md).
+I test usano un database SQLite temporaneo in memoria e verificano stato HTTP e risposta JSON, senza controllare la forma della query SQL. Alcuni falliscono finché la GET non è completata. phpMyAdmin è su <http://127.0.0.1:8080/> (utente `school_user`, password `school_dev`). `docker compose down` ferma i container; `docker compose down -v` elimina i dati e permette di ricaricare lo schema al prossimo avvio. [Guida Docker comune](../../../DOCKER.md).
 
 
 
-Questo esercizio si svolge dopo la `POST` dell'esercizio 02 e prima delle transazioni. Osservate la [GET dei libri](../00-example-books-api/public/api/books.php), poi costruite una GET per un database diverso. Qui avete già schema, dati, connessione PDO, controllo del metodo HTTP e gestione degli errori. La lettura del parametro, la query e la risposta sono da scrivere in `public/api/students.php`.
+Questo esercizio si svolge dopo la `POST` dell'esercizio 02 e prima delle transazioni. Osservate la [GET dei libri](../00-example-books-api/public/api/books.php), poi costruite una GET per un database diverso. Qui avete già schema, dati, connessione PDO, controllo del metodo HTTP e gestione degli errori. La lettura del parametro e la risposta sono da completare in `public/api/students.php`; la lettura dei dati è in `src/StudentRepository.php`.
 
 ## Contratto dell'API
 
@@ -25,32 +25,31 @@ Questo esercizio si svolge dopo la `POST` dell'esercizio 02 e prima delle transa
 | --- | --- |
 | `GET /api/students.php` | `200` con tutti gli studenti, ordinati per `id` |
 | `GET /api/students.php?min_age=18` | `200` con gli studenti la cui età è almeno 18 |
-| `GET /api/students.php?min_age=100` | `200` con `{"students":[]}` |
+| `GET /api/students.php?min_age=100` | `200` con `[]` |
 | `GET` con `min_age` non intero tra 14 e 100 | `422` con `{"error":"..."}` |
 | Qualsiasi altro metodo HTTP | `405` con `Allow: GET` |
+| Errore interno o del database | `500` con `{"error":"<messaggio dell'eccezione>"}` |
 
-La risposta di una GET riuscita ha questa forma:
+La risposta di una GET riuscita è un array JSON di elementi con i campi di `StudentDto`:
 
 ```json
-{
-  "students": [
-    {"id": 1, "first_name": "Giulia", "last_name": "Bianchi", "age": 16},
-    {"id": 2, "first_name": "Marco", "last_name": "Rossi", "age": 17}
-  ]
-}
+[
+  {"firstName": "Giulia", "lastName": "Bianchi", "age": 16, "studentCode": "ST-001"},
+  {"firstName": "Marco", "lastName": "Rossi", "age": 17, "studentCode": "ST-002"}
+]
 ```
 
-Sono mostrate solo le prime due righe per brevità. La tabella contiene anche `student_code`, ma **la risposta non deve mai includerlo**. Selezionate direttamente le sole colonne pubbliche: `id`, `first_name`, `last_name`, `age`. In questo modo la query documenta quali dati l'API può esporre.
+Sono mostrati solo i primi due elementi per brevità. La risposta deve contenere esattamente `firstName`, `lastName`, `age` e `studentCode` per ogni studente, nello stesso ordine delle righe ordinate per `id`. `id` serve per l'ordinamento nel database ma non è un campo di `StudentDto`.
 
 `schema.sql` crea `school_ex02_get.students` e inserisce sei studenti, con età 16, 17, 18, 18, 19 e 21. Così il filtro restituisce risultati diversi dalla lista completa e permette di verificare la `WHERE`.
 
 ## Lavoro da fare
 
 1. In `public/api/students.php`, leggere `min_age` dalla URL. Se manca, elencare tutti gli studenti. Se è presente, accettare solo un intero tra 14 e 100; per gli altri valori sollevare `InvalidArgumentException`, che lo scheletro trasforma già in `422`.
-2. Preparare una `SELECT` con PDO. Usare `WHERE age >= :min_age` solo quando il filtro è presente, passando il valore a `execute()` come parametro. Ordinare per `id`. Non concatenare il valore ricevuto nella query.
-3. Leggere le righe con `fetchAll()` e rispondere con `respond(200, ['students' => $rows])`. Sostituire il `LogicException` finale. Nessuna transazione è richiesta.
+2. In `src/StudentRepository.php`, preparare una `SELECT` con PDO. Usare `WHERE age >= :min_age` solo quando il filtro è presente, passando il valore come parametro. Ordinare per `id`. Non concatenare il valore ricevuto nella query.
+3. Leggere le righe con `fetchAll()`, trasformarle in elementi `StudentDto` e rispondere con `respond(200, $students)`. La risposta è l'array stesso, senza un oggetto `students` esterno. Nessuna transazione è richiesta.
 
-Il percorso è `curl → public/api/students.php → config/database.php → MariaDB → JSON`. La connessione è già pronta in `config/database.php`; la GET deve fare tutto il resto. Confrontate con la GET dell'esempio dei libri, ma qui scrivete voi anche la validazione del filtro e la scelta delle colonne.
+Il percorso è `curl → public/api/students.php → config/database.php → MariaDB → JSON`. La connessione è già pronta in `config/database.php`; la GET deve fare tutto il resto. Confrontate con la GET dell'esempio dei libri, ma qui scrivete voi anche la validazione del filtro e la conversione delle righe in DTO.
 
 ## Test API senza MariaDB
 
@@ -60,11 +59,13 @@ Dalla cartella dell'esercizio:
 php tests/run.php
 ```
 
-Su Windows con XAMPP usare `& "C:\xampp\php\php.exe" .\tests\run.php` in PowerShell. I test avviano un server PHP locale, chiamano davvero l'endpoint HTTP e usano un database simulato con gli stessi sei studenti. Controllano lista, filtro, lista vuota, dati nascosti e stati di errore. All'inizio i test GET falliscono con `501`: è il lavoro ancora da svolgere. Il test del metodo non consentito è già verde. Serve il permesso di aprire una porta locale sul computer.
+Su Windows con XAMPP usare `& "C:\xampp\php\php.exe" .\tests\run.php` in PowerShell dopo aver abilitato `pdo_sqlite` nel PHP locale; con Docker il driver è già nell'immagine. I test avviano un server PHP locale, chiamano davvero l'endpoint HTTP e usano SQLite in memoria con gli stessi sei studenti. Controllano il contenuto dell'array di DTO, il filtro, la lista vuota e gli stati di errore. Nello scheletro iniziale i test GET falliscono con `501`: è il lavoro ancora da svolgere. Il test del metodo non consentito è già verde. Serve il permesso di aprire una porta locale sul computer.
+
+Su Omarchy/Arch, per usare il PHP del computer invece di Docker, installare `php-sqlite` con `sudo pacman -Syu php-sqlite` e abilitare `extension=pdo_sqlite` in `/etc/php/php.ini`. Per servire l'API locale con MariaDB, abilitare anche `extension=pdo_mysql`; il modulo è incluso nel pacchetto `php`.
 
 Se compare `Impossibile avviare il server PHP`, il processo PHP dei test non è riuscito a creare il server figlio. Il messaggio successivo indica l'errore di sistema; controllate che l'esecuzione di processi non sia bloccata e che la cartella temporanea sia scrivibile. Se compare `Il server PHP non si è avviato`, viene mostrato anche il log del server. Un altro server sulla porta `8000` non interferisce con i test: scelgono una porta libera automaticamente.
 
-`tests/fake-database.php` è solo per i test: `DB_FACTORY_FILE` sostituisce la connessione a MariaDB mentre il server dei test è in esecuzione. Nelle prove normali non impostate questa variabile.
+`tests/test-database.php` è solo per i test: `DB_FACTORY_FILE` sostituisce la connessione a MariaDB con un database SQLite nuovo per ogni richiesta. Nelle prove normali non impostate questa variabile.
 
 ## Prova con MariaDB
 
@@ -88,7 +89,7 @@ curl.exe -i "http://localhost:8000/api/students.php?min_age=18"
 
 Su Linux, dopo aver importato lo schema con `mariadb -u root -p < schema.sql`, avviate `php -S 127.0.0.1:8000 -t public` e usate `curl` al posto di `curl.exe`.
 
-Per verificare la differenza tra tabella e risposta API, eseguite in phpMyAdmin:
+Per confrontare le righe del database con gli elementi restituiti dall'API, eseguite in phpMyAdmin:
 
 ```sql
 SELECT id, first_name, last_name, age, student_code

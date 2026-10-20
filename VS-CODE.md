@@ -12,6 +12,6 @@ Il comando `docker compose down` dalla cartella dell'esercizio arresta i servizi
 
 ## Esercizi PHP e SQL
 
-Le API PHP attuali non hanno dipendenze Composer esterne. Le classi del progetto sono nei file dell'esercizio; `PDO` e `pdo_mysql` sono forniti dall'immagine PHP. Per navigazione, completamento e controlli statici in VS Code puoi usare [PHP Intelephense](https://marketplace.visualstudio.com/items?itemName=bmewburn.vscode-intelephense-client): include le definizioni delle funzioni e delle classi standard di PHP e non richiede PHP installato sul computer. Esegui comunque i test e il server con i comandi Docker del README dell'esercizio: l'analisi dell'editor non sostituisce l'esecuzione nel container.
+Le API PHP attuali non hanno dipendenze Composer esterne. Le classi del progetto sono nei file dell'esercizio; `PDO`, `pdo_mysql` e `pdo_sqlite` sono forniti dall'immagine PHP degli esercizi. Per navigazione, completamento e controlli statici in VS Code puoi usare [PHP Intelephense](https://marketplace.visualstudio.com/items?itemName=bmewburn.vscode-intelephense-client): include le definizioni delle funzioni e delle classi standard di PHP e non richiede PHP installato sul computer. Esegui comunque i test e il server con i comandi Docker del README dell'esercizio: l'analisi dell'editor non sostituisce l'esecuzione nel container.
 
 Gli esercizi SQL usano il client MariaDB nel container, come indicato nei rispettivi README; non richiedono librerie dell'editor sul computer.

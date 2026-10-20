@@ -11,7 +11,7 @@ Un'**immagine** è il modello con un programma e il suo ambiente; un **container
 | Elemento | A che cosa serve | Esempio in questo repository |
 | --- | --- | --- |
 | Immagine | Fornisce runtime e strumenti | `node:20-bookworm-slim` per i test TypeScript; `mariadb:11.8` per il database. |
-| Dockerfile | Costruisce un'immagine personalizzata | [Quello delle API PHP](info/API/docker/php/Dockerfile) aggiunge il driver `pdo_mysql` a PHP. |
+| Dockerfile | Costruisce un'immagine personalizzata | [Quello delle API PHP](info/API/docker/php/Dockerfile) aggiunge i driver `pdo_mysql` e `pdo_sqlite` a PHP. |
 | Container | Esegue un servizio o un comando | `app` serve un'API; `test` esegue una suite e termina. |
 | Volume | Conserva dati oltre la vita del container | `db_data` conserva le righe MariaDB anche dopo `docker compose down`. |
 | Montaggio di cartella | Rende visibili nel container i file del computer | `.:/work` fa leggere subito al container le modifiche al codice. |

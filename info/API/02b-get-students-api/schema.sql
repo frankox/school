@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS students (
     student_code VARCHAR(30) NOT NULL UNIQUE
 ) ENGINE=InnoDB;
 
--- I codici sono dati interni: la GET non deve restituirli.
+-- La GET espone i codici nel campo studentCode di StudentDto.
 INSERT INTO students (first_name, last_name, age, student_code) VALUES
     ('Giulia', 'Bianchi', 16, 'ST-001'),
     ('Marco', 'Rossi', 17, 'ST-002'),
