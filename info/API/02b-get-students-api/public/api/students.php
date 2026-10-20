@@ -38,7 +38,7 @@ try {
     respond(500, ['error' => $exception->getMessage()]);
 }
 
-function requestedMinAge(): int|null
+function getMinAgeFromRequest(): int|null
 {
     $minAge = filter_input(INPUT_GET, 'min_age', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
     if ($minAge === false) {
