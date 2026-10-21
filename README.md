@@ -28,6 +28,23 @@ Per avere anche il completamento e l'analisi statica di VS Code senza installare
 
 **Se lavori in Dev Containers**, usa le istruzioni nel `README.md` del singolo esercizio e scegli il terminale indicato: per Valutazione azienda puoi entrare nella cartella dell'esercizio ed eseguire `npm test` nel terminale integrato del container; per gli esercizi PHP e SQL esegui i comandi `docker compose` del loro README in un terminale **del computer**, fuori dal Dev Container. Il container dell'editor non include il comando `docker`.
 
+### Scorciatoie npm per Docker Compose
+
+Se hai anche Node.js e npm sul computer, dalla radice `school` puoi usare queste scorciatoie. Tutti i test e i servizi girano nei container; Node.js locale serve solo ad avviare lo script npm. Con il solo Docker, usa i comandi equivalenti nei README degli esercizi.
+
+| Esercizio | Test | Avvio dei servizi |
+| --- | --- | --- |
+| Valutazione azienda | `npm run test:gestione-progetto:valutazione-azienda:docker` | — |
+| API esempio libri | — | `npm run up:info:example` |
+| API 01 | `npm run test:info:1:docker` | `npm run up:info:1` |
+| API 02 | `npm run test:info:2:docker` | `npm run up:info:2` |
+| API 02b | `npm run test:info:2b:docker` | `npm run up:info:2b` |
+| API 03 | `npm run test:info:3:docker` | `npm run up:info:3` |
+| API 04 | `npm run test:info:4:docker` | `npm run up:info:4` |
+| Fondamenti SQL | — | `npm run up:info:sql` |
+
+I comandi `up` attendono che i servizi siano pronti e li lasciano in esecuzione. Per richieste HTTP, query, arresto e reset dei dati, segui il README dell'esercizio. `npm run serve:info:2:docker` resta disponibile come scorciatoia precedente per avviare API 02.
+
 ## Comandi rapidi per le API
 
 Apri un terminale nella cartella `school`. Con Node.js e PHP installati, `npm install` prepara il progetto; qui non ci sono pacchetti npm esterni da scaricare. I comandi seguenti sono scorciatoie per avviare PHP:

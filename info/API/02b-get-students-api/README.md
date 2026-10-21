@@ -47,25 +47,9 @@ Sono mostrati solo i primi due elementi per brevità. La risposta deve contenere
 
 1. In `public/api/students.php`, leggere `min_age` dalla URL. Se manca, elencare tutti gli studenti. Se è presente, accettare solo un intero tra 14 e 100; per gli altri valori sollevare `InvalidArgumentException`, che lo scheletro trasforma già in `422`.
 2. In `src/StudentRepository.php`, preparare una `SELECT` con PDO. Usare `WHERE age >= :min_age` solo quando il filtro è presente, passando il valore come parametro. Ordinare per `id`. Non concatenare il valore ricevuto nella query.
-3. Leggere le righe con `fetchAll()`, trasformarle in elementi `StudentDto` e rispondere con `respond(200, $students)`. La risposta è l'array stesso, senza un oggetto `students` esterno. Nessuna transazione è richiesta.
+3. Leggere le righe con `fetchAll()`, trasformarle in elementi `StudentDto` e rispondere con `respond(200, $students)`.
 
 Il percorso è `curl → public/api/students.php → config/database.php → MariaDB → JSON`. La connessione è già pronta in `config/database.php`; la GET deve fare tutto il resto. Confrontate con la GET dell'esempio dei libri, ma qui scrivete voi anche la validazione del filtro e la conversione delle righe in DTO.
-
-## Test API senza MariaDB
-
-Dalla cartella dell'esercizio:
-
-```bash
-php tests/run.php
-```
-
-Su Windows con XAMPP usare `& "C:\xampp\php\php.exe" .\tests\run.php` in PowerShell dopo aver abilitato `pdo_sqlite` nel PHP locale; con Docker il driver è già nell'immagine. I test avviano un server PHP locale, chiamano davvero l'endpoint HTTP e usano SQLite in memoria con gli stessi sei studenti. Controllano il contenuto dell'array di DTO, il filtro, la lista vuota e gli stati di errore. Nello scheletro iniziale i test GET falliscono con `501`: è il lavoro ancora da svolgere. Il test del metodo non consentito è già verde. Serve il permesso di aprire una porta locale sul computer.
-
-Su Omarchy/Arch, per usare il PHP del computer invece di Docker, installare `php-sqlite` con `sudo pacman -Syu php-sqlite` e abilitare `extension=pdo_sqlite` in `/etc/php/php.ini`. Per servire l'API locale con MariaDB, abilitare anche `extension=pdo_mysql`; il modulo è incluso nel pacchetto `php`.
-
-Se compare `Impossibile avviare il server PHP`, il processo PHP dei test non è riuscito a creare il server figlio. Il messaggio successivo indica l'errore di sistema; controllate che l'esecuzione di processi non sia bloccata e che la cartella temporanea sia scrivibile. Se compare `Il server PHP non si è avviato`, viene mostrato anche il log del server. Un altro server sulla porta `8000` non interferisce con i test: scelgono una porta libera automaticamente.
-
-`tests/test-database.php` è solo per i test: `DB_FACTORY_FILE` sostituisce la connessione a MariaDB con un database SQLite nuovo per ogni richiesta. Nelle prove normali non impostate questa variabile.
 
 ## Prova con MariaDB
 
