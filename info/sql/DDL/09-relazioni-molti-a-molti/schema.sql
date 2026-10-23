@@ -1,0 +1,2 @@
+CREATE TABLE participants(id INT PRIMARY KEY); INSERT INTO participants VALUES(1),(2);
+CREATE TABLE courses(id INT PRIMARY KEY); INSERT INTO courses VALUES(1),(2);

@@ -1,0 +1,2 @@
+-- TODO: implement the DDL requirements described in README.md.
+-- Create and select ddl_01 before defining its tables.

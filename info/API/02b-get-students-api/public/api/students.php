@@ -23,11 +23,12 @@ try {
     $createPdo = require dirname(__DIR__, 2) . '/config/database.php';
     $pdo = $createPdo();
 
-   // TODO: leggere e validare l'eventuale parametro min_age.
-    // TODO: preparare ed eseguire una SELECT con PDO; se min_age è presente,
-    //       filtrare con WHERE age >= :min_age.
-    // TODO: rispondere con 200 e {"students":[...]}, senza student_code.
-    throw new LogicException('Completa la GET degli studenti.');
+    $repo = new StudentRepository($pdo);
+    $minAge = getMinAgeFromRequest();
+
+    $students = $repo->retrieveStudentsYoungerThan($minAge);
+
+    respond(200,  $students);
 
 } catch (InvalidArgumentException $exception) {
     respond(422, ['error' => $exception->getMessage()]);

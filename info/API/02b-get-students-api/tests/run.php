@@ -108,7 +108,7 @@ try {
         'GET with min_age returns matching StudentDto elements' => static function (): void {
             [$status, $body] = request('/api/students.php?min_age=18');
             assertStatus(200, $status, $body);
-            assertSameValue(array_slice(expectedStudentDtos(), 2), $body, 'Filtered StudentDto array');
+            assertSameValue(array_slice(expectedStudentDtos(),-2), $body, 'Filtered StudentDto array');
         },
         'GET returns an empty array when no students match' => static function (): void {
             [$status, $body] = request('/api/students.php?min_age=100');

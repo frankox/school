@@ -1,0 +1,2 @@
+# Bash test scripts must retain LF line endings inside Linux containers.
+*.sh text eol=lf

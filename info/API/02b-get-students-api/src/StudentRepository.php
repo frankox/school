@@ -18,8 +18,16 @@ final class StudentRepository
 
     public function retrieveStudentsYoungerThan(int|null $minAge): array
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM students WHERE age > :min_age');
-        $stmt->bindValue(':min_age', $minAge, PDO::PARAM_INT);
+        $query = 'SELECT * FROM students';
+        if ($minAge !== null) {
+            $query .= ' WHERE age > :min_age';
+        }
+
+        $stmt = $this->pdo->prepare($query);
+        if ($minAge !== null) {
+            $stmt->bindValue(':min_age', $minAge, PDO::PARAM_INT);
+        }
+
         $stmt->execute();
 
         $result = [];

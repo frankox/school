@@ -1,0 +1,10 @@
+assert_equals "rentals exposes the required columns and nullability" "SELECT GROUP_CONCAT(CONCAT(COLUMN_NAME,':',COLUMN_TYPE,':',IS_NULLABLE) ORDER BY COLUMN_NAME SEPARATOR ';') FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='rentals'" "customer_name:varchar(100):NO;hours:int:NO;phone:varchar(30):YES;status:varchar(12):NO"
+# Test descriptions are in English. SQL assertions use the isolated test database.
+assert_accepts "Optional phone and default values are accepted" "INSERT INTO rentals(customer_name) VALUES ('Anna')"
+assert_equals "Defaults are applied" "SELECT CONCAT(hours,':',status,':',phone IS NULL) FROM rentals WHERE customer_name='Anna'" "1:pending:1"
+assert_rejects "A missing name is rejected" "1048" "INSERT INTO rentals(customer_name) VALUES(NULL)"
+assert_rejects "An explicit null duration is rejected" "1048" "INSERT INTO rentals(customer_name,hours) VALUES('B',NULL)"
+assert_rejects "A zero duration is rejected" "3819" "INSERT INTO rentals(customer_name,hours) VALUES('B',0)"
+assert_rejects "A duration above 24 is rejected" "3819" "INSERT INTO rentals(customer_name,hours) VALUES('B',25)"
+assert_rejects "An unknown status is rejected" "3819" "INSERT INTO rentals(customer_name,status) VALUES('B','unknown')"
+assert_accepts "Boundary durations and all statuses are accepted" "INSERT INTO rentals VALUES('B',NULL,24,'confirmed'),('C','123',1,'cancelled')"

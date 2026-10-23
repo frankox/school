@@ -99,7 +99,13 @@ Se il progetto include `db`, il README dell'esercizio riporta nome del database 
 docker compose exec db mariadb -u UTENTE -p NOME_DATABASE
 ```
 
-Sostituire `UTENTE` e `NOME_DATABASE` con i valori documentati; `-p` chiede la password. Terminare ogni query SQL con `;` e digitare `exit` per uscire. Se il progetto include il servizio opzionale `admin`, avviare l'interfaccia nel browser con:
+Questo esempio usa il client MariaDB. Per un servizio MySQL, come negli esercizi DDL, il client si chiama `mysql`:
+
+```bash
+docker compose exec db mysql -u UTENTE -p NOME_DATABASE
+```
+
+Scegliere il client indicato nel README dell’esercizio e sostituire `UTENTE` e `NOME_DATABASE` con i valori documentati; `-p` chiede la password. Terminare ogni query SQL con `;` e digitare `exit` per uscire. Se il progetto include il servizio opzionale `admin`, avviare l'interfaccia nel browser con:
 
 ```bash
 docker compose --profile admin up -d --wait

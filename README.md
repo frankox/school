@@ -6,6 +6,9 @@ Questo repository raccoglie esercizi per gli studenti, organizzati per materia e
 school/
 ├── info/
 │   ├── sql/
+│   │   ├── DDL/  # 12 esercizi su struttura, vincoli, relazioni e indici
+│   │   ├── DML/  # sezione predisposta
+│   │   ├── DQL/  # sezione predisposta
 │   │   └── fondamenti-sql/
 │   └── API/
 │       ├── 00-example-books-api/
@@ -17,6 +20,8 @@ school/
 └── gestione-progetto/
     └── valutazione-azienda/
 ```
+
+Per SQL, parti dall’[introduzione](info/sql/README.md) e dai [12 esercizi DDL](info/sql/DDL/README.md), ciascuno con test e ambiente MySQL indipendente, oltre al setup quando necessario. Le sezioni DML e DQL sono predisposte per i prossimi esercizi.
 
 Per iniziare, scegli [Informatica](info/README.md) o [Gestione progetto](gestione-progetto/README.md) e leggi il `README.md` del materiale. Ogni esercizio spiega obiettivo, preparazione e comandi per provarlo.
 
@@ -42,6 +47,7 @@ Se hai anche Node.js e npm sul computer, dalla radice `school` puoi usare queste
 | API 03 | `npm run test:info:3:docker` | `npm run up:info:3` |
 | API 04 | `npm run test:info:4:docker` | `npm run up:info:4` |
 | Fondamenti SQL | — | `npm run up:info:sql` |
+| DDL 01–12 | `npm run test:info:sql:ddl:01:docker` (fino a `12`) | `npm run up:info:sql:ddl:01` (fino a `12`) |
 
 I comandi `up` attendono che i servizi siano pronti e li lasciano in esecuzione. Per richieste HTTP, query, arresto e reset dei dati, segui il README dell'esercizio. `npm run serve:info:2:docker` resta disponibile come scorciatoia precedente per avviare API 02.
 

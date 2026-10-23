@@ -1,0 +1,10 @@
+assert_equals "readers exposes the required columns and nullability" "SELECT GROUP_CONCAT(CONCAT(COLUMN_NAME,':',COLUMN_TYPE,':',IS_NULLABLE) ORDER BY COLUMN_NAME SEPARATOR ';') FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='readers'" "card_code:char(8):YES;email:varchar(150):NO;full_name:varchar(100):NO;id:int:NO"
+assert_equals "readers generates identifiers with auto increment" "SELECT EXTRA FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='readers' AND COLUMN_NAME='id'" "auto_increment"
+# Test descriptions are in English. SQL assertions use the isolated test database.
+assert_equals "readers has the required primary key" "SELECT GROUP_CONCAT(COLUMN_NAME ORDER BY ORDINAL_POSITION) FROM information_schema.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='readers' AND CONSTRAINT_NAME='PRIMARY'" "id"
+assert_accepts "Two readers can share a name" "INSERT INTO readers(full_name,email) VALUES('Anna Rossi','anna1@example.test'),('Anna Rossi','anna2@example.test')"
+assert_equals "Identifiers are generated and distinct" "SELECT COUNT(DISTINCT id) FROM readers" "2"
+assert_rejects "A duplicate email is rejected" "1062" "INSERT INTO readers(full_name,email) VALUES('Luca','anna1@example.test')"
+assert_accepts "A card can be assigned" "INSERT INTO readers(full_name,email,card_code) VALUES('Luca','luca@example.test','ABCD1234')"
+assert_rejects "A duplicate card is rejected" "1062" "INSERT INTO readers(full_name,email,card_code) VALUES('Sara','sara@example.test','ABCD1234')"
+assert_rejects "A null email is rejected" "1048" "INSERT INTO readers(full_name,email) VALUES('N',NULL)"

@@ -112,7 +112,13 @@ Anche tipi di dato, funzioni e generazione automatica degli identificatori posso
 
 ## Come proseguire
 
-Il percorso graduale procederà dalla creazione di database e tabelle all'inserimento dei dati, poi alla lettura con filtri e ordinamenti, alle modifiche e infine alle relazioni tra tabelle, ai raggruppamenti e alle transazioni. Questa è la progressione prevista; le cartelle degli esercizi descriveranno di volta in volta prerequisiti, sintassi, attività e risultati attesi.
+Gli esercizi sono organizzati per tipologia di linguaggio:
+
+- [DDL — Data Definition Language](DDL/README.md): 12 esercizi progressivi su database, tabelle, tipi, vincoli, relazioni, chiavi composite e indici, fino a un progetto riepilogativo.
+- [DML — Data Manipulation Language](DML/README.md): sezione predisposta per i futuri esercizi di inserimento, modifica ed eliminazione dei dati.
+- [DQL — Data Query Language](DQL/README.md): sezione predisposta per i futuri esercizi di lettura e interrogazione dei dati.
+
+Inizia dal percorso DDL: ogni cartella descrive un caso reale, i concetti necessari, la sintassi MySQL, l’attività e i risultati attesi. Gli ambienti sono indipendenti e i test forniscono già le query necessarie a verificare le definizioni.
 
 SQL si può eseguire attraverso un client collegato a un database, anche avviato con Docker, oppure in un ambiente online di tipo *SQL fiddle*. In quest'ultimo caso occorre selezionare MySQL e una versione compatibile con la consegna; non tutti gli ambienti online consentono le stesse operazioni, per esempio la creazione di un database. Ogni esercizio che richiede un database avrà il proprio `compose.yaml` e le istruzioni per svolgerlo con il solo Docker. Per i concetti comuni sull'ambiente consulta la [guida Docker](../../DOCKER.md).
 

@@ -15,6 +15,7 @@ function assertClose(actual?: number, expected?: number): void {
   );
 }
 
+
 const variableStatements: AnnualStatement[] = [
   { grossIncome: 125_000, taxes: 25_000 },
   { grossIncome: 190_000, taxes: 40_000 },

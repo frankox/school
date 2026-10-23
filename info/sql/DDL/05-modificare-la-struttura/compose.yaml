@@ -1,0 +1,37 @@
+name: school-ddl-05
+
+services:
+  db:
+    image: mysql:8.4.7
+    environment:
+      MYSQL_ROOT_PASSWORD: school_root_dev
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: ddl_05
+    volumes:
+      - db_data:/var/lib/mysql
+      - .:/work:ro
+      - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: [CMD-SHELL, 'MYSQL_PWD="$${MYSQL_ROOT_PASSWORD}" mysql -h 127.0.0.1 -u root -e "SELECT 1" >/dev/null 2>&1']
+      interval: 3s
+      timeout: 3s
+      retries: 40
+      start_period: 20s
+
+  test:
+    image: mysql:8.4.7
+    profiles: [tools]
+    entrypoint: [bash, /support/run.sh]
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PWD: school_root_dev
+      EXERCISE_DB: ddl_05
+    volumes:
+      - .:/work:ro
+      - ../_support:/support:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:

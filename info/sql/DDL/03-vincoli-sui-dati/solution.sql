@@ -1,0 +1,2 @@
+-- TODO: implement the DDL requirements described in README.md.
+-- The database is already selected; do not add CREATE DATABASE or USE.
