@@ -6,9 +6,11 @@ Un cinema numera i posti a partire da 1 in ogni sala. Il posto 12 può esistere 
 
 Per ogni posto bisogna conservare il codice della sala, il numero del posto, la lettera della fila e la posizione nella fila. Nella stessa sala non possono esserci due posti con lo stesso numero né due posti nella stessa posizione fisica. In sale diverse, invece, numeri e posizioni possono ripetersi. Il numero del posto e quello della posizione nella fila devono essere maggiori di zero, e tutte le informazioni devono essere presenti.
 
-### Requisiti tecnici
+### Dati e comportamenti richiesti
 
-Crea `seats` con `room_code CHAR(3)`, `seat_number INT`, `row_label CHAR(1) NOT NULL`, `position_in_row INT NOT NULL`. Usa la chiave primaria composta `(room_code, seat_number)` e un vincolo univoco `(room_code, row_label, position_in_row)`. I due numeri devono essere positivi. Non creare ancora la tabella delle sale: qui studiamo l’identificazione composta, non le relazioni.
+Prepara la tabella `seats` usando `room_code` per il codice testuale della sala, `seat_number` per il numero intero del posto, `row_label` per la lettera della fila e `position_in_row` per il numero intero della posizione nella fila.
+
+Scegli tipi e dimensioni adeguati e traduci in regole del database l’identificazione del posto e l’unicità della posizione fisica descritte sopra. Tutti i campi sono obbligatori e i due numeri devono essere positivi. Non creare ancora la tabella delle sale: qui studiamo l’identificazione composta, non le relazioni.
 
 ## Prima di iniziare
 
@@ -32,7 +34,7 @@ L’unicità riguarda la combinazione, non ogni singola colonna. Tutte le colonn
 - `compose.yaml`: database, client e test già disponibili nei container.
 - `cleanup.sql`: pulizia dei database dell’esercizio, se usi un server condiviso.
 
-**Input:** un database vuoto e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. I nomi, i tipi, le dimensioni e i comportamenti richiesti fanno parte del contratto; i nomi dei vincoli possono essere scelti liberamente, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
+**Input:** un database vuoto e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. Rispetta i nomi e i comportamenti richiesti. La scelta dei tipi SQL e delle dimensioni spetta a te: deve essere adeguata ai dati descritti e compatibile con le strutture già fornite. Non è richiesta una dimensione identica a quella di un esempio di sintassi. I nomi dei vincoli sono liberi, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
 
 ## Eseguire con Docker
 

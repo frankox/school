@@ -6,9 +6,11 @@ Un sistema logistico identifica uno scaffale con il magazzino e il codice locale
 
 Per ogni pacco bisogna conservare un numero identificativo, un’etichetta descrittiva e la posizione completa: magazzino e codice dello scaffale. Tutte queste informazioni sono obbligatorie. Più pacchi possono occupare lo stesso scaffale, ma la posizione assegnata deve esistere nell’elenco già disponibile. Finché uno scaffale contiene pacchi, non deve essere possibile eliminarlo o cambiarne i dati identificativi.
 
-### Requisiti tecnici
+### Dati e comportamenti richiesti
 
-È fornita `bins`, identificata da `(warehouse_id, bin_code)`. Crea `parcels` con `id INT PRIMARY KEY`, `warehouse_id INT NOT NULL`, `bin_code CHAR(3) NOT NULL`, `label VARCHAR(100) NOT NULL`. Definisci un’unica chiave esterna composta verso `bins`, con cancellazione e aggiornamento bloccati se lo scaffale contiene pacchi. La coppia `(1, 'B01')` deve essere rifiutata anche se il magazzino 1 e il codice B01 esistono separatamente.
+L’archivio `bins` è già fornito: ogni scaffale è identificato dal magazzino e dal proprio codice locale. Prepara `parcels` con `id` per il numero intero identificativo del pacco, `warehouse_id` per il magazzino, `bin_code` per il codice testuale dello scaffale e `label` per l’etichetta descrittiva. Tutti i campi sono obbligatori.
+
+Scegli tipi e dimensioni compatibili con l’archivio esistente. Il database deve verificare la posizione completa e applicare le regole descritte sopra: per esempio, la posizione `(1, 'B01')` deve essere rifiutata anche se il magazzino 1 e il codice B01 esistono separatamente.
 
 ## Prima di iniziare
 
@@ -33,7 +35,7 @@ Numero e ordine delle colonne devono corrispondere alla chiave referenziata; i t
 - `compose.yaml`: database, client e test già disponibili nei container.
 - `cleanup.sql`: pulizia dei database dell’esercizio, se usi un server condiviso.
 
-**Input:** il setup e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. I nomi, i tipi, le dimensioni e i comportamenti richiesti fanno parte del contratto; i nomi dei vincoli possono essere scelti liberamente, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
+**Input:** il setup e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. Rispetta i nomi e i comportamenti richiesti. La scelta dei tipi SQL e delle dimensioni spetta a te: deve essere adeguata ai dati descritti e compatibile con le strutture già fornite. Non è richiesta una dimensione identica a quella di un esempio di sintassi. I nomi dei vincoli sono liberi, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
 
 ## Eseguire con Docker
 

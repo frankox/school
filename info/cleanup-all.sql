@@ -32,3 +32,7 @@ DROP DATABASE IF EXISTS ddl_11;
 DROP DATABASE IF EXISTS ddl_11_test;
 DROP DATABASE IF EXISTS ddl_12;
 DROP DATABASE IF EXISTS ddl_12_test;
+
+-- MySQL DML exercises and their isolated test databases.
+DROP DATABASE IF EXISTS dml_01;
+DROP DATABASE IF EXISTS dml_01_test;

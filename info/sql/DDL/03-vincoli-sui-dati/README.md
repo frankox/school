@@ -6,9 +6,11 @@ Un servizio di noleggio biciclette riceve prenotazioni incomplete e durate negat
 
 Ogni prenotazione deve riportare il nome del cliente, una durata da una a ventiquattro ore e uno stato: in attesa, confermata o annullata. Il recapito telefonico può mancare. Se chi registra la prenotazione non indica durata e stato, il sistema deve assumere un’ora e lo stato in attesa. Deve invece rifiutare durate fuori intervallo, stati non previsti e l’assenza delle informazioni obbligatorie.
 
-### Requisiti tecnici
+### Dati e comportamenti richiesti
 
-Crea `rentals`: `customer_name VARCHAR(100) NOT NULL`, `phone VARCHAR(30)` facoltativo, `hours INT NOT NULL DEFAULT 1` compreso tra 1 e 24, `status VARCHAR(12) NOT NULL DEFAULT 'pending'` limitato a `pending`, `confirmed`, `cancelled`. Assegna nomi comprensibili ai due `CHECK`.
+Prepara la tabella `rentals` usando `customer_name` per il nome del cliente, `phone` per il recapito telefonico, `hours` per la durata espressa in ore intere e `status` per lo stato. Memorizza gli stati con i valori testuali `pending`, `confirmed` e `cancelled`, corrispondenti a in attesa, confermata e annullata.
+
+Il database deve applicare le regole di obbligatorietà, durata e valori predefiniti descritte sopra. Scegli tipi e dimensioni e assegna nomi comprensibili alle regole sui valori ammessi.
 
 ## Prima di iniziare
 
@@ -35,7 +37,7 @@ Un `CHECK` può confrontare colonne della stessa riga e usare `IN (...)` per lim
 - `compose.yaml`: database, client e test già disponibili nei container.
 - `cleanup.sql`: pulizia dei database dell’esercizio, se usi un server condiviso.
 
-**Input:** un database vuoto e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. I nomi, i tipi, le dimensioni e i comportamenti richiesti fanno parte del contratto; i nomi dei vincoli possono essere scelti liberamente, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
+**Input:** un database vuoto e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. Rispetta i nomi e i comportamenti richiesti. La scelta dei tipi SQL e delle dimensioni spetta a te: deve essere adeguata ai dati descritti e compatibile con le strutture già fornite. Non è richiesta una dimensione identica a quella di un esempio di sintassi. I nomi dei vincoli sono liberi, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
 
 ## Eseguire con Docker
 

@@ -1,4 +1,8 @@
-assert_equals "parcels exposes the required columns and nullability" "SELECT GROUP_CONCAT(CONCAT(COLUMN_NAME,':',COLUMN_TYPE,':',IS_NULLABLE) ORDER BY COLUMN_NAME SEPARATOR ';') FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='parcels'" "bin_code:char(3):NO;id:int:NO;label:varchar(100):NO;warehouse_id:int:NO"
+assert_columns "parcels" "bin_code:NO;id:NO;label:NO;warehouse_id:NO"
+assert_type "parcels" "bin_code" "text"
+assert_type "parcels" "id" "integer"
+assert_type "parcels" "label" "text"
+assert_type "parcels" "warehouse_id" "integer"
 # Test descriptions are in English. SQL assertions use the isolated test database.
 assert_accepts "An existing location accepts parcels" "INSERT INTO parcels VALUES(1,1,'A01','Pacco libri'),(2,1,'A01','Pacco spartiti')"
 assert_rejects "A mixed but nonexistent pair is rejected" "1452" "INSERT INTO parcels VALUES(3,1,'B01','Non valido')"

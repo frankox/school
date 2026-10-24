@@ -2,7 +2,7 @@
 
 Il DDL è il linguaggio di definizione dei dati: descrive la struttura del database e le regole che i dati devono rispettare. Il percorso usa **MySQL 8.4.7** e parte da casi realistici per arrivare alla progettazione di uno schema completo.
 
-Leggi prima l’[introduzione SQL](../README.md). Ogni esercizio ha un ambiente indipendente: non occorre tenere avviati i database precedenti. Le prime consegne sono guidate; nel progetto finale si devono combinare e motivare le scelte.
+Leggi prima l’[introduzione SQL](../README.md). Ogni esercizio ha un ambiente indipendente: non occorre tenere avviati i database precedenti. Le consegne descrivono dati e comportamenti attesi: la scelta dei tipi SQL, delle dimensioni e dei vincoli spetta allo studente. Gli esempi di sintassi illustrano gli strumenti, senza prescrivere la struttura da copiare. Le scelte devono restare compatibili con gli eventuali schemi già forniti; nel progetto finale si devono combinare e motivare.
 
 | Esercizio | Obiettivo |
 | --- | --- |

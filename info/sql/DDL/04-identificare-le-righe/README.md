@@ -6,9 +6,11 @@ Una biblioteca deve distinguere utenti omonimi e impedire che lo stesso indirizz
 
 Per ogni lettore bisogna registrare nome completo ed email, entrambi obbligatori, e generare automaticamente un numero interno distinto. Due persone possono avere lo stesso nome, ma non possono condividere lo stesso indirizzo email. Il codice della tessera, lungo otto caratteri, può essere assegnato in un secondo momento: quando è presente deve appartenere a un solo lettore. Il numero interno deve continuare a identificare la stessa persona anche dopo una modifica dei recapiti.
 
-### Requisiti tecnici
+### Dati e comportamenti richiesti
 
-Crea `readers` con `id INT AUTO_INCREMENT PRIMARY KEY`, `full_name VARCHAR(100) NOT NULL`, `email VARCHAR(150) NOT NULL UNIQUE`, `card_code CHAR(8) UNIQUE` facoltativo. In `design.md` spiega perché due omonimi sono ammessi e perché l’email non viene usata come chiave primaria.
+Prepara la tabella `readers` con `id` per il numero intero interno, `full_name` per il nome completo, `email` per l’indirizzo email e `card_code` per il codice testuale della tessera. Il numero interno deve identificare ogni lettore ed essere assegnato automaticamente; gli altri campi devono rispettare obbligatorietà e unicità descritte sopra.
+
+Scegli tipi e dimensioni adeguati. In `design.md` spiega perché due omonimi sono ammessi e perché l’email non viene usata per identificare stabilmente la riga.
 
 ## Prima di iniziare
 
@@ -35,7 +37,7 @@ Una chiave naturale proviene dal dominio, come un codice ufficiale; una chiave a
 - `compose.yaml`: database, client e test già disponibili nei container.
 - `cleanup.sql`: pulizia dei database dell’esercizio, se usi un server condiviso.
 
-**Input:** un database vuoto e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. I nomi, i tipi, le dimensioni e i comportamenti richiesti fanno parte del contratto; i nomi dei vincoli possono essere scelti liberamente, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
+**Input:** un database vuoto e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. Rispetta i nomi e i comportamenti richiesti. La scelta dei tipi SQL e delle dimensioni spetta a te: deve essere adeguata ai dati descritti e compatibile con le strutture già fornite. Non è richiesta una dimensione identica a quella di un esempio di sintassi. I nomi dei vincoli sono liberi, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
 
 ## Eseguire con Docker
 

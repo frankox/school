@@ -6,9 +6,11 @@ Un centro di formazione iscrive più partecipanti a ogni corso e ogni partecipan
 
 Il centro dispone già degli elenchi di partecipanti e corsi. Ora deve registrare chi si iscrive a quale corso e in quale giorno, senza ammettere due iscrizioni della stessa persona allo stesso corso. Ogni iscrizione può ricevere successivamente un voto da zero a dieci, anche con decimali; prima della valutazione il voto resta assente. Non devono esistere iscrizioni a persone o corsi inesistenti, e non si devono cancellare partecipanti o corsi che hanno iscrizioni registrate.
 
-### Requisiti tecnici
+### Dati e comportamenti richiesti
 
-Sono fornite `participants` e `courses`. Crea `enrollments` con `participant_id INT`, `course_id INT`, `enrolled_on DATE NOT NULL`, `grade DECIMAL(4,2)` facoltativo e limitato tra 0 e 10 quando presente. La chiave primaria è `(participant_id, course_id)`; entrambe le chiavi esterne devono impedire la cancellazione di un padre con iscrizioni. In questo esempio un’iscrizione non può essere ripetuta allo stesso corso: eventuali edizioni future richiederebbero un modello diverso.
+Gli archivi `participants` e `courses` sono già forniti. Prepara `enrollments` con `participant_id` per il partecipante, `course_id` per il corso, `enrolled_on` per il giorno di iscrizione senza orario e `grade` per il voto, facoltativo. Il voto deve conservare esattamente anche le frazioni di punto, per esempio 8,5.
+
+Scegli tipi e dimensioni compatibili con gli archivi esistenti. Identifica ogni iscrizione attraverso partecipante e corso e fai rispettare al database le regole descritte sopra. In questo esempio un’iscrizione non può essere ripetuta allo stesso corso: eventuali edizioni future richiederebbero un modello diverso.
 
 ## Prima di iniziare
 
@@ -39,7 +41,7 @@ Un identificatore artificiale nella tabella associativa sarebbe possibile, ma da
 - `compose.yaml`: database, client e test già disponibili nei container.
 - `cleanup.sql`: pulizia dei database dell’esercizio, se usi un server condiviso.
 
-**Input:** il setup e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. I nomi, i tipi, le dimensioni e i comportamenti richiesti fanno parte del contratto; i nomi dei vincoli possono essere scelti liberamente, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
+**Input:** il setup e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. Rispetta i nomi e i comportamenti richiesti. La scelta dei tipi SQL e delle dimensioni spetta a te: deve essere adeguata ai dati descritti e compatibile con le strutture già fornite. Non è richiesta una dimensione identica a quella di un esempio di sintassi. I nomi dei vincoli sono liberi, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
 
 ## Eseguire con Docker
 

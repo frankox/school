@@ -1,4 +1,8 @@
-assert_equals "readers exposes the required columns and nullability" "SELECT GROUP_CONCAT(CONCAT(COLUMN_NAME,':',COLUMN_TYPE,':',IS_NULLABLE) ORDER BY COLUMN_NAME SEPARATOR ';') FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='readers'" "card_code:char(8):YES;email:varchar(150):NO;full_name:varchar(100):NO;id:int:NO"
+assert_columns "readers" "card_code:YES;email:NO;full_name:NO;id:NO"
+assert_type "readers" "card_code" "text"
+assert_type "readers" "email" "text"
+assert_type "readers" "full_name" "text"
+assert_type "readers" "id" "integer"
 assert_equals "readers generates identifiers with auto increment" "SELECT EXTRA FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='readers' AND COLUMN_NAME='id'" "auto_increment"
 # Test descriptions are in English. SQL assertions use the isolated test database.
 assert_equals "readers has the required primary key" "SELECT GROUP_CONCAT(COLUMN_NAME ORDER BY ORDINAL_POSITION) FROM information_schema.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='readers' AND CONSTRAINT_NAME='PRIMARY'" "id"

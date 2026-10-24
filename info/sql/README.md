@@ -115,7 +115,7 @@ Anche tipi di dato, funzioni e generazione automatica degli identificatori posso
 Gli esercizi sono organizzati per tipologia di linguaggio:
 
 - [DDL — Data Definition Language](DDL/README.md): 12 esercizi progressivi su database, tabelle, tipi, vincoli, relazioni, chiavi composite e indici, fino a un progetto riepilogativo.
-- [DML — Data Manipulation Language](DML/README.md): sezione predisposta per i futuri esercizi di inserimento, modifica ed eliminazione dei dati.
+- [DML — Data Manipulation Language](DML/README.md): programma di otto esercizi su inserimento, modifica, eliminazione e transazioni; è disponibile il [primo esercizio su INSERT](DML/01-inserire-righe/README.md).
 - [DQL — Data Query Language](DQL/README.md): sezione predisposta per i futuri esercizi di lettura e interrogazione dei dati.
 
 Inizia dal percorso DDL: ogni cartella descrive un caso reale, i concetti necessari, la sintassi MySQL, l’attività e i risultati attesi. Gli ambienti sono indipendenti e i test forniscono già le query necessarie a verificare le definizioni.

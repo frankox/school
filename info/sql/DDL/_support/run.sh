@@ -10,7 +10,7 @@ TEST_DB="${EXERCISE_DB}_test"
 passed=0
 failed=0
 mysql_server() {
-    mysql --protocol=TCP --host="${MYSQL_HOST:-db}" --user=root --batch --skip-column-names "$@"
+    mysql --protocol=TCP --host="${MYSQL_HOST:-db}" --user=root --default-character-set=utf8mb4 --batch --skip-column-names "$@"
 }
 query() {
     mysql_server --init-command="SET SESSION sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'" "$TEST_DB" -e "$1"
@@ -31,6 +31,28 @@ assert_equals() {
         cat /tmp/ddl-error
     fi
 }
+# Check the contract without prescribing SQL type widths or text lengths.
+assert_columns() {
+    local table="$1" expected="$2"
+    assert_equals "$table exposes the required columns and nullability" \
+        "SELECT GROUP_CONCAT(CONCAT(COLUMN_NAME,':',IS_NULLABLE) ORDER BY COLUMN_NAME SEPARATOR ';') FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='$table'" "$expected"
+}
+assert_type() {
+    local table="$1" column="$2" family="$3" condition
+    case "$family" in
+        integer) condition="DATA_TYPE IN ('tinyint','smallint','mediumint','int','bigint')" ;;
+        text) condition="DATA_TYPE IN ('char','varchar','tinytext','text','mediumtext','longtext')" ;;
+        status) condition="DATA_TYPE IN ('char','varchar','enum')" ;;
+        decimal) condition="DATA_TYPE='decimal' AND NUMERIC_SCALE>=1" ;;
+        money) condition="DATA_TYPE='decimal' AND NUMERIC_SCALE>=2" ;;
+        date) condition="DATA_TYPE='date'" ;;
+        datetime) condition="DATA_TYPE IN ('datetime','timestamp')" ;;
+        boolean) condition="DATA_TYPE='tinyint' OR (DATA_TYPE='bit' AND NUMERIC_PRECISION=1)" ;;
+        *) fail "Unknown type family: $family"; return ;;
+    esac
+    assert_equals "$table.$column stores $family values" \
+        "SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='$table' AND COLUMN_NAME='$column' AND ($condition)" "1"
+}
 assert_accepts() {
     if query "$2" >/dev/null 2>/tmp/ddl-error; then
         pass "$1"
@@ -44,7 +66,7 @@ assert_rejects() {
     if query "$sql" >/dev/null 2>/tmp/ddl-error; then
         fail "$description"
         echo '  statement unexpectedly succeeded'
-    elif grep -q "^ERROR ${code} " /tmp/ddl-error; then
+    elif grep -Eq "^ERROR (${code}) " /tmp/ddl-error; then
         pass "$description"
     else
         fail "$description"

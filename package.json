@@ -55,6 +55,8 @@
     "test:info:sql:ddl:11:docker": "docker compose -f info/sql/DDL/11-indici/compose.yaml run --rm test",
     "up:info:sql:ddl:11": "docker compose -f info/sql/DDL/11-indici/compose.yaml up -d --wait",
     "test:info:sql:ddl:12:docker": "docker compose -f info/sql/DDL/12-progetto-riepilogativo/compose.yaml run --rm test",
-    "up:info:sql:ddl:12": "docker compose -f info/sql/DDL/12-progetto-riepilogativo/compose.yaml up -d --wait"
+    "up:info:sql:ddl:12": "docker compose -f info/sql/DDL/12-progetto-riepilogativo/compose.yaml up -d --wait",
+    "test:info:sql:dml:01:docker": "docker compose -f info/sql/DML/01-inserire-righe/compose.yaml run --rm test",
+    "up:info:sql:dml:01": "docker compose -f info/sql/DML/01-inserire-righe/compose.yaml up -d --wait"
   }
 }

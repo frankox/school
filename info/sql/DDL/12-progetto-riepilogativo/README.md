@@ -6,16 +6,16 @@ Un centro di formazione apre iscrizioni a corsi tenuti in aule diverse. La segre
 
 Per ogni aula servono un nome distinto e una capienza positiva. Per ogni corso occorrono un codice distinto, un titolo, un’aula esistente, le date di inizio e fine e una quota di partecipazione: la fine non può precedere l’inizio e la quota non può essere negativa; se non specificata, il corso è gratuito. Di ogni partecipante servono nome completo ed email personale non condivisa, mentre il telefono è facoltativo. Aule, corsi e partecipanti ricevono un numero interno automatico. Le iscrizioni collegano persone e corsi, registrano il giorno di adesione e non possono ripetersi per la stessa coppia. Non si devono eliminare o cambiare gli identificativi di elementi ancora referenziati; deve inoltre essere agevole consultare le iscrizioni di un corso per data. La capienza viene registrata, ma il controllo del numero totale degli iscritti richiederà strumenti ulteriori rispetto ai vincoli affrontati qui.
 
-### Requisiti tecnici
+### Dati e comportamenti richiesti
 
-Crea queste quattro tabelle, con tutti i campi obbligatori tranne `phone`:
+Organizza lo schema nelle seguenti tabelle, usando i nomi indicati per consentire le verifiche:
 
-- `rooms`: `id INT AUTO_INCREMENT PRIMARY KEY`, `name VARCHAR(50)` univoco, `capacity INT` positivo.
-- `courses`: `id INT AUTO_INCREMENT PRIMARY KEY`, `code VARCHAR(20)` univoco, `title VARCHAR(100)`, `room_id INT` collegato a `rooms(id)`, `starts_on DATE`, `ends_on DATE` non precedente all’inizio, `fee DECIMAL(8,2)` non negativo e predefinito a 0.
-- `participants`: `id INT AUTO_INCREMENT PRIMARY KEY`, `email VARCHAR(150)` univoca, `full_name VARCHAR(100)`, `phone VARCHAR(30)` facoltativo.
-- `enrollments`: `course_id INT`, `participant_id INT`, `enrolled_on DATE`, chiave primaria sulla coppia `(course_id, participant_id)` e chiavi esterne alle due tabelle.
+- `rooms`: `id` per il numero intero interno dell’aula, `name` per il nome e `capacity` per il numero intero di posti.
+- `courses`: `id` per il numero intero interno del corso, `code` per il codice testuale, `title` per il titolo, `room_id` per l’aula assegnata, `starts_on` e `ends_on` per i giorni di inizio e fine senza orario, `fee` per la quota in euro da conservare esattamente fino ai centesimi.
+- `participants`: `id` per il numero intero interno del partecipante, `email` per l’indirizzo email, `full_name` per il nome completo e `phone` per il recapito telefonico.
+- `enrollments`: `course_id` per il corso, `participant_id` per il partecipante ed `enrolled_on` per il giorno di iscrizione senza orario. Ogni iscrizione è identificata da corso e partecipante insieme.
 
-Blocca cancellazioni e aggiornamenti delle chiavi padre se sono referenziate. Aggiungi un indice non univoco su `enrollments(course_id, enrolled_on)`. Motiva in `design.md` le chiavi artificiali, la tabella associativa, la politica di cancellazione e il limite sul controllo della capienza. La valutazione delle motivazioni è manuale; i test verificano lo schema e i comportamenti, non il testo.
+Tutti i campi sono obbligatori tranne `phone`. Scegli tipi, dimensioni, vincoli e indici in modo che il database garantisca i comportamenti della consegna. Motiva in `design.md` gli identificativi interni, la rappresentazione delle iscrizioni, la politica di cancellazione e il limite sul controllo della capienza. La valutazione delle motivazioni è manuale; i test verificano lo schema e i comportamenti, non il testo.
 
 ## Prima di iniziare
 
@@ -35,7 +35,7 @@ Scrivi in `design.md` le scelte e i limiti. Non servono nuovi comandi: usa le si
 - `compose.yaml`: database, client e test già disponibili nei container.
 - `cleanup.sql`: pulizia dei database dell’esercizio, se usi un server condiviso.
 
-**Input:** un database vuoto e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. I nomi, i tipi, le dimensioni e i comportamenti richiesti fanno parte del contratto; i nomi dei vincoli possono essere scelti liberamente, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
+**Input:** un database vuoto e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. Rispetta i nomi e i comportamenti richiesti. La scelta dei tipi SQL e delle dimensioni spetta a te: deve essere adeguata ai dati descritti e compatibile con le strutture già fornite. Non è richiesta una dimensione identica a quella di un esempio di sintassi. I nomi dei vincoli sono liberi, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
 
 ## Eseguire con Docker
 

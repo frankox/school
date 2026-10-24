@@ -6,9 +6,15 @@ Una piccola libreria vuole sostituire il foglio di calcolo dei titoli disponibil
 
 La libreria ha bisogno di conservare il titolo e il nome dell’autore di ogni libro, insieme a un numero con cui riconoscere la voce nel catalogo. Titoli e nomi devono poter mantenere la loro scrittura originale: possono contenere lettere accentate come in «Niccolò», caratteri di altre lingue come `本` o simboli come `📚`. Il database deve quindi poter salvare questi caratteri senza perderli o sostituirli. Per ora devi preparare soltanto la struttura del catalogo, senza inserire i libri.
 
-### Requisiti tecnici
+### Dati e comportamenti richiesti
 
-Crea il database `ddl_01` con caratteri `utf8mb4`, selezionalo e crea `books` con esattamente queste colonne: `id INT`, `title VARCHAR(150)`, `author VARCHAR(100)`.
+Prepara il database `ddl_01` e la tabella `books` con tre campi:
+
+- `id`: numero intero della voce di catalogo.
+- `title`: testo del titolo.
+- `author`: testo con il nome dell’autore.
+
+Scegli una codifica che conservi tutti i caratteri descritti nella consegna. Per ora non sono richiesti identificatori automatici né vincoli sui dati.
 
 ## Prima di iniziare
 
@@ -40,7 +46,7 @@ CREATE TABLE esempio (
 - `compose.yaml`: database, client e test già disponibili nei container.
 - `cleanup.sql`: pulizia dei database dell’esercizio, se usi un server condiviso.
 
-**Input:** un server senza il database dell’esercizio e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. I nomi, i tipi, le dimensioni e i comportamenti richiesti fanno parte del contratto; i nomi dei vincoli possono essere scelti liberamente, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
+**Input:** un server senza il database dell’esercizio e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. Rispetta i nomi e i comportamenti richiesti. La scelta dei tipi SQL e delle dimensioni spetta a te: deve essere adeguata ai dati descritti e compatibile con le strutture già fornite. Non è richiesta una dimensione identica a quella di un esempio di sintassi. I nomi dei vincoli sono liberi, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
 
 ## Eseguire con Docker
 

@@ -6,9 +6,11 @@ Un negozio online consulta spesso gli ordini di un cliente ordinati per data e c
 
 Il sistema deve facilitare due consultazioni: ritrovare gli ordini di un cliente in ordine cronologico e individuare un ordine dal suo riferimento pubblico, che non può essere condiviso da altri ordini. Un cliente può però effettuare più ordini nello stesso istante. Va conservato tutto lo storico esistente e va rimossa la struttura di ricerca basata soltanto sullo stato, poco utile per le consultazioni descritte. Gli strumenti per accelerare le ricerche devono riflettere queste necessità.
 
-### Requisiti tecnici
+### Dati e comportamenti richiesti
 
-`orders` e un indice poco utile `idx_status` sono forniti. Crea un indice non univoco su `(customer_id, created_at)` e uno univoco su `reference`; rimuovi `idx_status`. Conserva righe e chiave primaria. In `design.md` spiega l’ordine delle colonne, perché il primo indice non deve essere univoco e perché non aggiungere un indice a ogni colonna. Prova il comando `EXPLAIN` fornito senza aspettarti necessariamente l’uso dell’indice su soli due ordini.
+La tabella `orders` è già fornita: `customer_id` indica il cliente, `created_at` la data e l’ora dell’ordine e `reference` il riferimento pubblico. È presente anche `idx_status`, una struttura di ricerca basata solo sullo stato, da rimuovere.
+
+Progetta gli indici per le consultazioni descritte sopra, garantendo l’unicità del riferimento pubblico e permettendo più ordini dello stesso cliente nello stesso istante. Conserva righe e identificazione degli ordini. In `design.md` motiva l’ordine delle colonne scelto e spiega perché non aggiungere un indice a ogni colonna. Prova il comando `EXPLAIN` fornito senza aspettarti necessariamente l’uso dell’indice su soli due ordini.
 
 ## Prima di iniziare
 
@@ -36,7 +38,7 @@ Per un indice composto l’ordine conta: `(cliente_id, creata_il)` serve normalm
 - `compose.yaml`: database, client e test già disponibili nei container.
 - `cleanup.sql`: pulizia dei database dell’esercizio, se usi un server condiviso.
 
-**Input:** il setup e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. I nomi, i tipi, le dimensioni e i comportamenti richiesti fanno parte del contratto; i nomi dei vincoli possono essere scelti liberamente, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
+**Input:** il setup e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. Rispetta i nomi e i comportamenti richiesti. La scelta dei tipi SQL e delle dimensioni spetta a te: deve essere adeguata ai dati descritti e compatibile con le strutture già fornite. Non è richiesta una dimensione identica a quella di un esempio di sintassi. I nomi dei vincoli sono liberi, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
 
 ## Eseguire con Docker
 

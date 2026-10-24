@@ -6,9 +6,15 @@ Un servizio di assistenza deve conservare i ticket quando un operatore lascia l�
 
 Ogni ticket ha un numero identificativo e può essere assegnato a un operatore oppure restare senza assegnazione. Quando un operatore viene rimosso, i suoi ticket devono restare disponibili ma risultare non assegnati; se cambia il suo numero identificativo, i collegamenti devono seguirlo. Ogni riga di bozza appartiene obbligatoriamente a una bozza: ne segue il cambio di numero e viene eliminata insieme a essa. Ogni fattura appartiene invece a un cliente: finché esistono fatture, il cliente non può essere cancellato e il suo numero identificativo non può cambiare.
 
-### Requisiti tecnici
+### Dati e comportamenti richiesti
 
-Le tabelle padre sono fornite. Crea `tickets(id INT PRIMARY KEY, agent_id INT NULL)` con `ON DELETE SET NULL ON UPDATE CASCADE`; `draft_lines(id INT PRIMARY KEY, draft_id INT NOT NULL)` con `ON DELETE CASCADE ON UPDATE CASCADE`; `invoices(id INT PRIMARY KEY, customer_id INT NOT NULL)` con `ON DELETE RESTRICT ON UPDATE RESTRICT`. Ogni riferimento punta alla colonna `id` della tabella padre indicata dal nome. In `design.md` motiva le tre politiche.
+Gli archivi `agents`, `drafts` e `customers` sono già forniti. Prepara:
+
+- `tickets`: `id` come numero intero identificativo del ticket e `agent_id` per l’operatore, che può mancare.
+- `draft_lines`: `id` come numero intero identificativo della riga e `draft_id` per la bozza, sempre presente.
+- `invoices`: `id` come numero intero identificativo della fattura e `customer_id` per il cliente, sempre presente.
+
+Scegli i tipi compatibili con gli archivi esistenti e fai rispettare al database i comportamenti descritti per cancellazioni e cambi di identificativo. In `design.md` motiva le tre politiche.
 
 ## Prima di iniziare
 
@@ -35,7 +41,7 @@ CONSTRAINT esempio_fk FOREIGN KEY (padre_id) REFERENCES esempio_padri(id)
 - `compose.yaml`: database, client e test già disponibili nei container.
 - `cleanup.sql`: pulizia dei database dell’esercizio, se usi un server condiviso.
 
-**Input:** il setup e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. I nomi, i tipi, le dimensioni e i comportamenti richiesti fanno parte del contratto; i nomi dei vincoli possono essere scelti liberamente, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
+**Input:** il setup e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. Rispetta i nomi e i comportamenti richiesti. La scelta dei tipi SQL e delle dimensioni spetta a te: deve essere adeguata ai dati descritti e compatibile con le strutture già fornite. Non è richiesta una dimensione identica a quella di un esempio di sintassi. I nomi dei vincoli sono liberi, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
 
 ## Eseguire con Docker
 

@@ -6,9 +6,11 @@ Un ambulatorio deve assegnare ogni appuntamento a un medico. Ripetere nome e rec
 
 Ogni appuntamento deve avere un numero identificativo, una data con ora e il nome del paziente, e deve essere assegnato a un medico già registrato. Lo stesso medico può ricevere più appuntamenti; un medico appena inserito può invece non averne ancora nessuno. Non devono essere accettati appuntamenti senza medico o assegnati a un medico inesistente. Le informazioni anagrafiche dei medici restano nell’archivio già disponibile.
 
-### Requisiti tecnici
+### Dati e comportamenti richiesti
 
-`doctors` è già fornita. Crea `appointments` con `id INT PRIMARY KEY`, `doctor_id INT NOT NULL`, `starts_at DATETIME NOT NULL`, `patient_name VARCHAR(100) NOT NULL`. Collega `doctor_id` a `doctors(id)` con una chiave esterna, senza `UNIQUE`: un medico può avere più appuntamenti. In `design.md` descrivi cardinalità e obbligatorietà e proponi un caso in cui un profilo riservato 1:1 sarebbe utile e uno in cui preferiresti una sola tabella.
+L’archivio `doctors` è già fornito. Prepara `appointments` con `id` per il numero intero identificativo dell’appuntamento, `doctor_id` per il medico assegnato, `starts_at` per data e ora e `patient_name` per il nome del paziente. Tutti i campi sono obbligatori.
+
+Scegli tipi e dimensioni compatibili con i dati e con l’archivio esistente. Il database deve garantire le regole di assegnazione descritte sopra. In `design.md` descrivi cardinalità e obbligatorietà e proponi un caso in cui un profilo riservato 1:1 sarebbe utile e uno in cui preferiresti una sola tabella.
 
 ## Prima di iniziare
 
@@ -39,7 +41,7 @@ Una relazione **1:1** si può ottenere aggiungendo `UNIQUE` alla chiave esterna:
 - `compose.yaml`: database, client e test già disponibili nei container.
 - `cleanup.sql`: pulizia dei database dell’esercizio, se usi un server condiviso.
 
-**Input:** il setup e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. I nomi, i tipi, le dimensioni e i comportamenti richiesti fanno parte del contratto; i nomi dei vincoli possono essere scelti liberamente, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
+**Input:** il setup e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. Rispetta i nomi e i comportamenti richiesti. La scelta dei tipi SQL e delle dimensioni spetta a te: deve essere adeguata ai dati descritti e compatibile con le strutture già fornite. Non è richiesta una dimensione identica a quella di un esempio di sintassi. I nomi dei vincoli sono liberi, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
 
 ## Eseguire con Docker
 

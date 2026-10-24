@@ -6,9 +6,17 @@ Un negozio ha già un catalogo in produzione. Vuole aggiungere le scorte, amplia
 
 Il nuovo catalogo deve accogliere nomi più lunghi e indicare il numero di pezzi disponibili, che non può essere negativo. Per i prodotti già registrati, la disponibilità iniziale sarà zero. Il negozio vuole anche chiamare più chiaramente il campo del prezzo e l’archivio del catalogo, eliminare il vecchio codice non più usato e rimuovere l’archivio temporaneo di importazione. I due prodotti esistenti devono mantenere numeri identificativi, nomi e prezzi.
 
-### Requisiti tecnici
+### Dati e comportamenti richiesti
 
-Modifica `products` fornita: amplia `name` a `VARCHAR(120) NOT NULL`, rinomina `cost` in `price` mantenendo `DECIMAL(8,2) NOT NULL`, aggiungi `stock INT NOT NULL DEFAULT 0` e un `CHECK (stock >= 0)`, elimina `legacy_code`. Rinomina la tabella in `catalog_products` ed elimina solo `import_buffer`. Conserva i due prodotti, i rispettivi id, nomi e prezzi. Usa operazioni DDL, senza ricreare o reinserire i prodotti.
+Parti dalla tabella `products` già fornita e apporta queste modifiche:
+
+- Il campo `name` deve restare obbligatorio e accogliere nomi più lunghi dell’attuale limite di 40 caratteri: scegli il nuovo limite.
+- Il prezzo, attualmente chiamato `cost`, deve chiamarsi `price`, mantenendo formato, precisione e obbligatorietà già presenti.
+- Il nuovo campo `stock` deve contenere un numero intero di pezzi, obbligatorio e non negativo. In assenza di un valore esplicito deve valere zero, anche per i prodotti già registrati.
+- Il campo `legacy_code` non serve più.
+- La tabella del catalogo deve chiamarsi `catalog_products`; la tabella temporanea `import_buffer` deve essere eliminata.
+
+Conserva i due prodotti con i rispettivi identificativi, nomi e prezzi. Usa operazioni DDL, senza ricreare o reinserire i prodotti.
 
 ## Prima di iniziare
 
@@ -20,7 +28,7 @@ Modifica `products` fornita: amplia `name` a `VARCHAR(120) NOT NULL`, rinomina `
 
 ```sql
 ALTER TABLE esempio ADD COLUMN quantita INT NOT NULL DEFAULT 0;
-ALTER TABLE esempio MODIFY COLUMN nome VARCHAR(120) NOT NULL;
+ALTER TABLE esempio MODIFY COLUMN descrizione VARCHAR(250) NOT NULL;
 ALTER TABLE esempio RENAME COLUMN vecchio_nome TO nuovo_nome;
 ALTER TABLE esempio DROP COLUMN obsoleto;
 RENAME TABLE esempio TO nuovo_esempio;
@@ -37,7 +45,7 @@ Aggiungere un vincolo può fallire se i dati esistenti lo violano. Le modifiche 
 - `compose.yaml`: database, client e test già disponibili nei container.
 - `cleanup.sql`: pulizia dei database dell’esercizio, se usi un server condiviso.
 
-**Input:** il setup e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. I nomi, i tipi, le dimensioni e i comportamenti richiesti fanno parte del contratto; i nomi dei vincoli possono essere scelti liberamente, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
+**Input:** il setup e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. Rispetta i nomi e i comportamenti richiesti. La scelta dei tipi SQL e delle dimensioni spetta a te: deve essere adeguata ai dati descritti e compatibile con le strutture già fornite. Non è richiesta una dimensione identica a quella di un esempio di sintassi. I nomi dei vincoli sono liberi, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
 
 ## Eseguire con Docker
 

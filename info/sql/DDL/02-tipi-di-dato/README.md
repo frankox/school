@@ -6,9 +6,21 @@ Un negozio di strumenti musicali vende prodotti con un codice fisso, un prezzo, 
 
 Per ogni prodotto il negozio vuole conservare un numero interno, un codice commerciale di otto caratteri, il nome e una descrizione estesa. Deve inoltre conoscere il prezzo esatto al centesimo, il numero di pezzi in magazzino, il giorno da cui il prodotto sarà disponibile e il momento in cui è stato registrato. Un indicatore segnala se il prodotto è attivo nel catalogo. I codici possono iniziare con zero: quel primo zero va conservato, perché fa parte del codice e non di una quantità.
 
-### Requisiti tecnici
+### Dati e comportamenti richiesti
 
-Crea `products` con `id INT`, `sku CHAR(8)`, `name VARCHAR(100)`, `description TEXT`, `price DECIMAL(8,2)`, `stock INT`, `available_on DATE`, `created_at DATETIME`, `active BOOLEAN`. Per ora non aggiungere vincoli. In `design.md` spiega perché un prezzo non è testo né un numero approssimato e perché il codice è testo anche se contiene solo cifre.
+Prepara la tabella `products` con questi campi, scegliendo tipi e dimensioni adatti al significato delle informazioni:
+
+- `id`: numero intero interno.
+- `sku`: codice commerciale testuale di otto caratteri, con eventuali zeri iniziali.
+- `name`: nome del prodotto.
+- `description`: descrizione estesa, che può contenere più paragrafi.
+- `price`: prezzo espresso in euro, da conservare esattamente fino ai centesimi.
+- `stock`: numero intero di pezzi in magazzino.
+- `available_on`: giorno di disponibilità, senza orario.
+- `created_at`: data e ora di registrazione.
+- `active`: indicatore vero o falso della presenza nel catalogo attivo.
+
+Per ora non aggiungere vincoli. In `design.md` motiva i tipi e le dimensioni scelti, spiegando in particolare perché un prezzo non è testo né un numero approssimato e perché il codice è testo anche se contiene solo cifre.
 
 ## Prima di iniziare
 
@@ -39,7 +51,7 @@ Nelle prove fornite le date usano `YYYY-MM-DD`, le date con ora `YYYY-MM-DD HH:M
 - `compose.yaml`: database, client e test già disponibili nei container.
 - `cleanup.sql`: pulizia dei database dell’esercizio, se usi un server condiviso.
 
-**Input:** un database vuoto e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. I nomi, i tipi, le dimensioni e i comportamenti richiesti fanno parte del contratto; i nomi dei vincoli possono essere scelti liberamente, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
+**Input:** un database vuoto e i requisiti della consegna. **Output:** lo schema creato o modificato da `solution.sql`. Rispetta i nomi e i comportamenti richiesti. La scelta dei tipi SQL e delle dimensioni spetta a te: deve essere adeguata ai dati descritti e compatibile con le strutture già fornite. Non è richiesta una dimensione identica a quella di un esempio di sintassi. I nomi dei vincoli sono liberi, salvo quelli esplicitamente indicati. Usa il motore predefinito InnoDB e non disabilitare controlli o vincoli. I test non sostituiscono il controllo manuale di ogni requisito e delle motivazioni.
 
 ## Eseguire con Docker
 
