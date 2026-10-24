@@ -13,7 +13,7 @@ docker compose exec db mariadb -u school_user -pschool_dev school_ex02_get -e "S
 docker compose --profile admin up -d --wait
 ```
 
-I test usano un database SQLite temporaneo in memoria e verificano stato HTTP e risposta JSON, senza controllare la forma della query SQL. Alcuni falliscono finché la GET non è completata. phpMyAdmin è su <http://127.0.0.1:8080/> (utente `school_user`, password `school_dev`). `docker compose down` ferma i container; `docker compose down -v` elimina i dati e permette di ricaricare lo schema al prossimo avvio. [Guida Docker comune](../../../DOCKER.md).
+I test usano un database SQLite temporaneo in memoria e verificano stato HTTP e risposta JSON, senza controllare la forma della query SQL. Nello scheletro iniziale falliscono i cinque test GET con stato `501`; passa solo il test sul metodo POST non consentito (`405`). phpMyAdmin è su <http://127.0.0.1:8080/> (utente `school_user`, password `school_dev`). `docker compose down` ferma i container; `docker compose down -v` elimina i dati e permette di ricaricare lo schema al prossimo avvio. [Guida Docker comune](../../../DOCKER.md).
 
 
 

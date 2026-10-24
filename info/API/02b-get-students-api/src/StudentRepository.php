@@ -18,29 +18,8 @@ final class StudentRepository
 
     public function retrieveStudentsYoungerThan(int|null $minAge): array
     {
-        $query = 'SELECT * FROM students';
-        if ($minAge !== null) {
-            $query .= ' WHERE age > :min_age';
-        }
-
-        $stmt = $this->pdo->prepare($query);
-        if ($minAge !== null) {
-            $stmt->bindValue(':min_age', $minAge, PDO::PARAM_INT);
-        }
-
-        $stmt->execute();
-
-        $result = [];
-
-        foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $result[] = new StudentDto(
-                firstName: $row['first_name'],
-                lastName: $row['last_name'],
-                age: $row['age'],
-                studentCode: $row['student_code']
-            );
-        }
-
-        return $result;
+        // TODO: leggere gli studenti con PDO, applicare l'eventuale filtro
+        //       min_age, ordinare per id e convertire le righe in StudentDto.
+        throw new LogicException('Completa la lettura degli studenti.');
     }
 }

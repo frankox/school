@@ -23,13 +23,10 @@ try {
     $createPdo = require dirname(__DIR__, 2) . '/config/database.php';
     $pdo = $createPdo();
 
-    $repo = new StudentRepository($pdo);
-    $minAge = getMinAgeFromRequest();
-
-    $students = $repo->retrieveStudentsYoungerThan($minAge);
-
-    respond(200,  $students);
-
+    // TODO: leggere e validare l'eventuale parametro min_age.
+    // TODO: usare StudentRepository per leggere gli studenti.
+    // TODO: rispondere con 200 e un array JSON di StudentDto.
+    throw new LogicException('Completa la GET degli studenti.');
 } catch (InvalidArgumentException $exception) {
     respond(422, ['error' => $exception->getMessage()]);
 } catch (LogicException $exception) {
@@ -41,10 +38,7 @@ try {
 
 function getMinAgeFromRequest(): int|null
 {
-    $minAge = filter_input(INPUT_GET, 'min_age', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
-    if ($minAge === false) {
-        throw new InvalidArgumentException('min_age deve essere un intero non negativo nella URL.');
-    }
-
-    return $minAge;
+    // TODO: restituire null se min_age manca, altrimenti validare l'intero
+    //       tra 14 e 100; per valori non validi lanciare InvalidArgumentException.
+    throw new LogicException('Completa la lettura del filtro min_age.');
 }
