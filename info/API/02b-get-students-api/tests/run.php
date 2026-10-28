@@ -25,12 +25,12 @@ function assertStatus(int $expected, int $actual, array $body): void
 function expectedStudentDtos(): array
 {
     return [
-        ['firstName' => 'Giulia', 'lastName' => 'Bianchi', 'age' => 16, 'studentCode' => 'ST-001'],
-        ['firstName' => 'Marco', 'lastName' => 'Rossi', 'age' => 17, 'studentCode' => 'ST-002'],
-        ['firstName' => 'Sara', 'lastName' => 'Verdi', 'age' => 18, 'studentCode' => 'ST-003'],
-        ['firstName' => 'Luca', 'lastName' => 'Neri', 'age' => 18, 'studentCode' => 'ST-004'],
-        ['firstName' => 'Amina', 'lastName' => 'Conti', 'age' => 19, 'studentCode' => 'ST-005'],
-        ['firstName' => 'Paolo', 'lastName' => 'Gallo', 'age' => 21, 'studentCode' => 'ST-006'],
+        ['firstName' => 'Giulia', 'lastName' => 'Bianchi', 'age' => 16],
+        ['firstName' => 'Marco', 'lastName' => 'Rossi', 'age' => 17],
+        ['firstName' => 'Sara', 'lastName' => 'Verdi', 'age' => 18],
+        ['firstName' => 'Luca', 'lastName' => 'Neri', 'age' => 18],
+        ['firstName' => 'Amina', 'lastName' => 'Conti', 'age' => 19],
+        ['firstName' => 'Paolo', 'lastName' => 'Gallo', 'age' => 21],
     ];
 }
 
@@ -100,7 +100,7 @@ try {
     }
 
     $tests = [
-        'GET returns all StudentDto elements in order' => static function (): void {
+        'GET returns all StudentDto elements in order, omitting sensitive data' => static function (): void {
             [$status, $body] = request('/api/students.php');
             assertStatus(200, $status, $body);
             assertSameValue(expectedStudentDtos(), $body, 'StudentDto array');
