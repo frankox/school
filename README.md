@@ -2,14 +2,17 @@
 
 Questo repository raccoglie esercizi per gli studenti, organizzati per materia e argomento.
 
+Per scaricare il materiale e mantenerlo aggiornato, segui la [guida essenziale a Git](info/git/README.md): spiega la clonazione, la differenza rispetto al download ZIP e i comandi principali.
+
 ```text
 school/
 ├── info/
-│   ├── sql/
+│   ├── git/  # guida essenziale al controllo di versione
+│   ├── SQL/
 │   │   ├── DDL/  # 12 esercizi su struttura, vincoli, relazioni e indici
 │   │   ├── DML/  # programma di 8 esercizi, primo su INSERT disponibile
 │   │   ├── DQL/  # sezione predisposta
-│   │   └── fondamenti-sql/
+│   │   └── fondamenti-SQL/
 │   └── API/
 │       ├── 00-example-books-api/
 │       ├── 01-csv-to-sql-api/
@@ -21,7 +24,7 @@ school/
     └── valutazione-azienda/
 ```
 
-Per SQL, parti dall’[introduzione](info/sql/README.md) e dai [12 esercizi DDL](info/sql/DDL/README.md), ciascuno con test e ambiente MySQL indipendente, oltre al setup quando necessario. Il [percorso DML](info/sql/DML/README.md) programma otto esercizi: è disponibile il [primo su INSERT](info/sql/DML/01-inserire-righe/README.md), con schema fornito e test. La sezione DQL è predisposta per i prossimi esercizi.
+Per SQL, parti dall’[introduzione](info/SQL/README.md) e dai [12 esercizi DDL](info/SQL/DDL/README.md), ciascuno con test e ambiente MySQL indipendente, oltre al setup quando necessario. Il [percorso DML](info/SQL/DML/README.md) programma otto esercizi: è disponibile il [primo su INSERT](info/SQL/DML/01-inserire-righe/README.md), con schema fornito e test. La sezione DQL è predisposta per i prossimi esercizi.
 
 Per iniziare, scegli [Informatica](info/README.md) o [Gestione progetto](gestione-progetto/README.md) e leggi il `README.md` del materiale. Ogni esercizio spiega obiettivo, preparazione e comandi per provarlo.
 
