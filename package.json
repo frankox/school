@@ -24,7 +24,7 @@
     "up:info:2b": "docker compose -f info/API/02b-get-students-api/compose.yaml up -d --build --wait",
     "up:info:3": "docker compose -f info/API/03-json-batch-transaction/compose.yaml up -d --build --wait",
     "up:info:4": "docker compose -f info/API/04-order-transaction/compose.yaml up -d --build --wait",
-    "up:info:sql": "docker compose -f info/SQL/fondamenti-SQL/compose.yaml up -d --wait",
+    "up:info:sql": "docker compose -f info/SQL/fondamenti-sql/compose.yaml up -d --wait",
     "serve:info:example": "node scripts/php.mjs serve example",
     "serve:info:1": "node scripts/php.mjs serve 1",
     "serve:info:2": "node scripts/php.mjs serve 2",

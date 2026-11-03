@@ -1,5 +1,7 @@
 # Esercizi API
 
+Prima degli esercizi, leggi [Dal browser ai dati: API, Inspector e SQL](inspector-e-sql.md): una guida breve per osservare una GET nel pannello Network, leggere la risposta JSON e collegare le operazioni delle API a DQL e DML. Puoi seguirla anche senza aver assistito alla dimostrazione in classe.
+
 Tutti gli esercizi hanno un `compose.yaml`: dalla cartella del singolo esercizio potete eseguire PHP, test e, quando serve, MariaDB usando solo Docker. Comandi e spiegazioni sono nella [guida Docker](../../DOCKER.md) e nel README di ciascun esercizio.
 
 Questi esercizi usano PHP e richieste HTTP. L'ordine suggerito è:
@@ -11,7 +13,7 @@ Questi esercizi usano PHP e richieste HTTP. L'ordine suggerito è:
 5. [Importazione batch con transazione](03-json-batch-transaction/README.md).
 6. [Ordine composto e gestione dello stock](04-order-transaction/README.md).
 
-Per esercitarsi sulle query prima di collegare PHP a MariaDB, seguire [Fondamenti SQL](../SQL/fondamenti-SQL/README.md). Si può svolgere anche mentre si completa il convertitore CSV.
+Per esercitarsi sulle query prima di collegare PHP a MariaDB, seguire [Fondamenti SQL](../SQL/fondamenti-sql/README.md). Si può svolgere anche mentre si completa il convertitore CSV.
 
 Ogni progetto che usa MariaDB ha un database proprio (`school_example`, `school_ex02`, `school_ex02_get`, `school_ex03`, `shop_ex04`) e contiene `cleanup.sql` per cancellarlo quando non serve più. L'esercizio 01 genera solo testo SQL e non crea database.
 

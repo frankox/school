@@ -2,6 +2,8 @@
 
 Questo percorso insegna a inserire, modificare ed eliminare dati in **MySQL 8.4.7**. Gli schemi sono già forniti: il lavoro consiste nello scrivere le operazioni sui dati, conservando struttura e vincoli.
 
+Per vedere come queste operazioni possono essere richieste da un'applicazione, leggi [DML: creare, modificare ed eliminare dati attraverso le API](../../API/inspector-e-sql.md#dml-creare-modificare-ed-eliminare-dati). La guida collega `POST`, `PATCH`, `PUT` e `DELETE` a possibili operazioni sui dati, anche in backend NoSQL.
+
 ## Programma degli esercizi
 
 | Esercizio | Obiettivo | Stato |

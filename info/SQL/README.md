@@ -47,6 +47,10 @@ Si incontrano spesso le sigle **DDL** (*Data Definition Language*, linguaggio di
 
 Una **transazione** permette di trattare più operazioni come un'unica unità. Non bisogna però presumere di poter annullare qualsiasi comando: in MySQL diverse operazioni sulla struttura, come `CREATE TABLE`, provocano una conferma implicita della transazione. Il relativo esercizio approfondirà queste regole.
 
+## Dal browser ai dati
+
+Per collegare queste famiglie di comandi a ciò che accade in un'applicazione, leggi [API, Inspector e SQL](../API/inspector-e-sql.md). La guida spiega come osservare una GET nel pannello Network e leggere i dati della risposta, anche senza aver assistito alla lezione. Collega la lettura a DQL e creazione, modifica ed eliminazione a DML, distinguendo le operazioni HTTP da quelle effettivamente eseguite dal backend. Una risposta JSON non rivela, da sola, se il server usi SQL o NoSQL.
+
 ## Come leggere e scrivere SQL
 
 Un'**istruzione** è un comando completo. Una **clausola** è una sua parte, introdotta da parole chiave come `FROM` o `WHERE`.
@@ -120,10 +124,11 @@ Gli esercizi sono organizzati per tipologia di linguaggio:
 
 Inizia dal percorso DDL: ogni cartella descrive un caso reale, i concetti necessari, la sintassi MySQL, l’attività e i risultati attesi. Gli ambienti sono indipendenti e i test forniscono già le query necessarie a verificare le definizioni.
 
-SQL si può eseguire attraverso un client collegato a un database, anche avviato con Docker, oppure in un ambiente online di tipo *SQL fiddle*. In quest'ultimo caso occorre selezionare MySQL e una versione compatibile con la consegna; non tutti gli ambienti online consentono le stesse operazioni, per esempio la creazione di un database. Ogni esercizio che richiede un database avrà il proprio `compose.yaml` e le istruzioni per svolgerlo con il solo Docker. Per i concetti comuni sull'ambiente consulta la [guida Docker](../../DOCKER.md).
+SQL si può eseguire attraverso un client collegato a un database, anche avviato con Docker, oppure in un [SQL fiddle online: guida breve](fiddle/README.md). Per le attività compatibili, XAMPP e l'ambiente online sono alternative didattiche: scegli il DBMS richiesto dalla consegna, MariaDB 11.8 per Fondamenti SQL o MySQL 8.4 per i percorsi DDL, DML e DQL. Preparazione e conservazione dei dati dipendono dall'ambiente; per esempio, online si usa normalmente un database già assegnato. Ogni esercizio che richiede un database avrà il proprio `compose.yaml` e le istruzioni per svolgerlo con il solo Docker. Per i concetti comuni sull'ambiente consulta la [guida Docker](../../DOCKER.md).
 
 ### Materiale già disponibile
 
-- [Fondamenti SQL — interrogare e modificare dati](fondamenti-SQL/README.md): laboratorio introduttivo già esistente su lettura, modifica e relazione 1:n. Usa attualmente **MariaDB**, un DBMS distinto da MySQL e compatibile con molte delle sue istruzioni; il suo README descrive l'ambiente effettivamente fornito. La compatibilità non implica che i due sistemi siano identici.
+- [Fondamenti SQL — interrogare e modificare dati](fondamenti-sql/README.md): laboratorio introduttivo su lettura, modifica e relazione 1:n, con istruzioni distinte per XAMPP, Docker e ambiente online. Usa **MariaDB 11.8** con Docker; scegli la stessa versione online. MariaDB è un DBMS distinto da MySQL e compatibile con molte delle sue istruzioni; la compatibilità non implica che siano identici.
+- [SQL fiddle — guida breve](fiddle/README.md): scegliere il DBMS, preparare le tabelle, eseguire query e leggere i risultati dal browser.
 
 [Torna all'indice di Informatica](../README.md).

@@ -9,11 +9,13 @@ school/
 ├── info/
 │   ├── git/  # guida essenziale al controllo di versione
 │   ├── SQL/
+│   │   ├── fiddle/  # guida all'ambiente SQL online
 │   │   ├── DDL/  # 12 esercizi su struttura, vincoli, relazioni e indici
 │   │   ├── DML/  # programma di 8 esercizi, primo su INSERT disponibile
 │   │   ├── DQL/  # sezione predisposta
-│   │   └── fondamenti-SQL/
+│   │   └── fondamenti-sql/
 │   └── API/
+│       ├── inspector-e-sql.md  # leggere le API dal browser e collegarle a SQL
 │       ├── 00-example-books-api/
 │       ├── 01-csv-to-sql-api/
 │       ├── 02-create-student-api/
@@ -25,6 +27,8 @@ school/
 ```
 
 Per SQL, parti dall’[introduzione](info/SQL/README.md) e dai [12 esercizi DDL](info/SQL/DDL/README.md), ciascuno con test e ambiente MySQL indipendente, oltre al setup quando necessario. Il [percorso DML](info/SQL/DML/README.md) programma otto esercizi: è disponibile il [primo su INSERT](info/SQL/DML/01-inserire-righe/README.md), con schema fornito e test. La sezione DQL è predisposta per i prossimi esercizi.
+
+Per osservare dal browser una richiesta GET e collegare API, DQL e DML, consulta la [guida a Inspector e SQL](info/API/inspector-e-sql.md).
 
 Per iniziare, scegli [Informatica](info/README.md) o [Gestione progetto](gestione-progetto/README.md) e leggi il `README.md` del materiale. Ogni esercizio spiega obiettivo, preparazione e comandi per provarlo.
 

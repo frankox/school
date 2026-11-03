@@ -95,6 +95,6 @@ docker compose up -d --wait
 
 ### Ambiente online
 
-Puoi usare un SQL fiddle con **MySQL 8.4** o una versione compatibile, almeno 8.0.16 per i `CHECK`. Carica la tua soluzione nello spazio destinato alla definizione dello schema: non è previsto un setup iniziale. Se il servizio vieta CREATE DATABASE o USE, prova soltanto CREATE TABLE nel database fornito: la parte di creazione del database va verificata con Docker. Le verifiche automatiche shell sono disponibili con Docker; online puoi riprodurre le istruzioni SQL dei test. Un servizio MariaDB, PostgreSQL o Oracle non è equivalente all’ambiente richiesto.
+Puoi usare un [SQL fiddle](../../fiddle/README.md) con **MySQL 8.4** o una versione compatibile, almeno 8.0.16 per i `CHECK`. Carica la tua soluzione nello spazio destinato alla definizione dello schema: non è previsto un setup iniziale. Se il servizio vieta CREATE DATABASE o USE, prova soltanto CREATE TABLE nel database fornito: la parte di creazione del database va verificata con Docker. Le verifiche automatiche shell sono disponibili con Docker; online puoi riprodurre le istruzioni SQL dei test. Un servizio MariaDB, PostgreSQL o Oracle non è equivalente all’ambiente richiesto.
 
 [Torna al percorso DDL](../README.md).
