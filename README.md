@@ -22,19 +22,22 @@ school/
 │       ├── 02b-get-students-api/
 │       ├── 03-json-batch-transaction/
 │       └── 04-order-transaction/
-└── gestione-progetto/
-    └── valutazione-azienda/
+├── gestione-progetto/
+│   └── valutazione-azienda/
+└── sistemi/
+    └── file-system/
+        └── stazione-aurora/  # script nativi per cmd, PowerShell e Bash
 ```
 
 Per SQL, parti dall’[introduzione](info/SQL/README.md) e dai [12 esercizi DDL](info/SQL/DDL/README.md), ciascuno con test e ambiente MySQL indipendente, oltre al setup quando necessario. Il [percorso DML](info/SQL/DML/README.md) programma otto esercizi: è disponibile il [primo su INSERT](info/SQL/DML/01-inserire-righe/README.md), con schema fornito e test. La sezione DQL è predisposta per i prossimi esercizi.
 
 Per osservare dal browser una richiesta GET e collegare API, DQL e DML, consulta la [guida a Inspector e SQL](info/API/inspector-e-sql.md).
 
-Per iniziare, scegli [Informatica](info/README.md) o [Gestione progetto](gestione-progetto/README.md) e leggi il `README.md` del materiale. Ogni esercizio spiega obiettivo, preparazione e comandi per provarlo.
+Per iniziare, scegli [Informatica](info/README.md), [Gestione progetto](gestione-progetto/README.md) o [Sistemi](sistemi/README.md) e leggi il `README.md` del materiale. Ogni esercizio spiega obiettivo, preparazione e comandi per provarlo.
 
 ## Avvio con solo Docker
 
-Ogni esercizio ha un `compose.yaml` nella propria cartella. Con Docker e `docker compose` puoi eseguire test, API e database senza installare PHP, Node.js, npm, MariaDB o curl sul computer. Apri un terminale nella cartella dell'esercizio e segui [la guida Docker](DOCKER.md) o il suo README. Il codice resta nei file del progetto e viene letto dai container; la prima esecuzione richiede Internet per scaricare immagini e dipendenze.
+Gli esercizi API, SQL e TypeScript hanno un `compose.yaml` nella propria cartella. Il [laboratorio Aurora](sistemi/file-system/stazione-aurora/README.md) usa invece script nativi da terminale, come indicato nel suo README. Con Docker e `docker compose` puoi eseguire test, API e database senza installare PHP, Node.js, npm, MariaDB o curl sul computer. Apri un terminale nella cartella dell'esercizio e segui [la guida Docker](DOCKER.md) o il suo README. Il codice resta nei file del progetto e viene letto dai container; la prima esecuzione richiede Internet per scaricare immagini e dipendenze.
 
 Per avere anche il completamento e l'analisi statica di VS Code senza installare le dipendenze sul computer, segui la [guida Docker, sezione «Usare VS Code nel container»](DOCKER.md#usare-vs-code-nel-container). Puoi aprire **l'intera cartella `school`** nel container di sviluppo e consultare tutti gli esercizi e i README; il solo avvio dei test Docker non rende visibili all'editor locale le librerie conservate nei volumi.
 
